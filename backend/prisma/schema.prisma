@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CANDIDAT
+  RESPONSABLE
+  PROF_SUPERVISOR
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+
+  nom             String
+  prenom          String
+  telephone       Int
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  role            Role          @default(CANDIDAT)
+  dateDeNaissance DateTime 
+
+  sujet           sujet[]
+  candidature     candidature[]
+  Resource        Resource[]
+  Task            Task[]
+}
+
+
+
+model sujet {
+  id          Int    @id @default(autoincrement())
+  titre       String
+  description String
+  category String
+  User        User?         @relation(fields: [userId], references: [id])
+  userId      Int?
+  candidature candidature[]
+  Resource    Resource[]
+}
+
+enum Status {
+  EN_ATTENTE
+  ACCEPTE
+  REFUSE
+}
+
+model candidature {
+  id Int @id @default(autoincrement())
+
+  sujetId Int?
+  sujet   sujet? @relation(fields: [sujetId], references: [id])
+
+  userId Int?
+  user   User? @relation(fields: [userId], references: [id])
+
+  supervisorId Int? @default(0)
+
+  status Status @default(EN_ATTENTE)
+
+  Resource  Resource[]
+  Task      Task[]
+  createdAt DateTime   @default(now())
+
+  @@unique([sujetId, userId])
+}
+
+model Task {
+  id            Int           @id @default(autoincrement())
+  name          String
+  description   String
+  deadline      DateTime
+  valide        Boolean       @default(false)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  candidature   candidature?  @relation(fields: [candidatureId], references: [id])
+  candidatureId Int?
+  User          User?         @relation(fields: [userId], references: [id])
+  userId        Int?
+  Commentaire   Commentaire[]
+}
+
+model Commentaire {
+  id       Int      @id @default(autoincrement())
+  date     DateTime
+  content  String
+  auteurID Int?
+  Task     Task?    @relation(fields: [tacheID], references: [id])
+  tacheID  Int?
+}
+
+enum ResourceType {
+  USER
+  CANDIDATURE
+  SUJET
+}
+
+model Resource {
+  id           Int          @id @default(autoincrement())
+  filename     String
+  type         String
+  resourceType ResourceType @default(USER)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  userId        Int? // Optional foreign key for User
+  candidatureId Int? // Optional foreign key for Candidature
+  sujetId       Int? // Optional foreign key for Sujet
+
+  User        User?        @relation(fields: [userId], references: [id])
+  candidature candidature? @relation(fields: [candidatureId], references: [id])
+  sujet       sujet?       @relation(fields: [sujetId], references: [id])
+
+  @@index([userId])
+  @@index([candidatureId])
+  @@index([sujetId])
+}
