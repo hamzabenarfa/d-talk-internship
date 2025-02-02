@@ -28,7 +28,7 @@ export function NavBar() {
 
         <Button variant="outline" size="lg" className=" rounded-full">Login</Button>
         </Link>
-        <Link to="/register">
+        <Link to="/signup">
 
         <Button size="lg" className=" rounded-full">
           Sign Up

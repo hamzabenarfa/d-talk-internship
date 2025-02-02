@@ -32,7 +32,7 @@ function App() {
         { path: "/job", element: <Job /> },
 
         { path: "login", element: <Login /> },
-        { path: "register", element: <Register /> },
+        { path: "signup", element: <Register /> },
         {
           path: "admin",
           element: <ProtectedRoute rolesRequired={["ADMIN"]} />,
