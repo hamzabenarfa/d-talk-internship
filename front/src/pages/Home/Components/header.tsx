@@ -1,7 +1,6 @@
-import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { UserCircleIcon } from "lucide-react"; // Import the icon you want to use
+import { UserCircleIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Header = () => {
@@ -31,28 +30,38 @@ const Header = () => {
   return (
     <header className="flex items-center justify-between px-10 border-1 border-b p-4">
       <div className="flex items-center gap-20">
-      <Link to="/">
-        <img src="/public/logo.png" alt="logo" className=" w-20" />
-      </Link>
-      <div className="flex items-center gap-2">
-
-        <Link to="/stage">
-          <Button variants="ghost" className="text-md font-normal ">Job</Button>
+        <Link to="/">
+          <img src="/public/logo.png" alt="logo" className=" w-20" />
         </Link>
-        <Link to="/stage">
-          <Button variants="ghost" className="text-md font-normal ">Internship</Button>
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link to="/stage">
+            <Button variant={"link"} className="text-md font-normal ">
+              Job
+            </Button>
+          </Link>
+          <Link to="/stage">
+            <Button variant={"link"} className="text-md font-normal ">
+              Internship
+            </Button>
+          </Link>
+        </div>
       </div>
-      </div>
-
-
 
       {isLoggedIn ? (
         <button onClick={handleProfileClick}>
           <UserCircleIcon className="size-8" />
         </button>
       ) : (
-        <Link to="/login">Login</Link>
+        <div className="flex items-center gap-1.5">
+          <Link to="/login">
+            <Button variant={"outline"} className="rounded-full " size="lg">
+              Login
+            </Button>
+          </Link>
+          <Link to="/register">
+            <Button className=" rounded-full" size="lg">Signup</Button>
+          </Link>
+        </div>
       )}
     </header>
   );

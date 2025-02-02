@@ -21,6 +21,7 @@ import ListeCandidature from "./pages/Etudiant/Components/liste-candidature";
 import Main from "./pages/Encadrant/page/main"
 import ValidationStage from "./pages/Encadrant/page/ValidationStage";
 import ProfileEnc from "./pages/Encadrant/page/ProfileEnc";
+import Job from "./pages/job";
 
 function App() {
   const router = createBrowserRouter([
@@ -28,6 +29,8 @@ function App() {
       path: "/",
       children: [
         { path: "/", element: <Home /> },
+        { path: "/job", element: <Job /> },
+
         { path: "login", element: <Login /> },
         { path: "register", element: <Register /> },
         {

@@ -111,7 +111,7 @@ const Register = () => {
     <div className="bg-gray-100 min-h-screen flex items-center justify-center px-6">
       <div className="max-w-md w-full space-y-8 p-8 shadow-lg rounded-2xl bg-white">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          S'inscrire
+          Register
         </h2>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">

@@ -6,6 +6,7 @@ import { loginSuccess } from '../../../redux/actions/authActions';
 import Header from '../../Home/Components/header';
 import * as yup from 'yup';
 import Toast     from 'react-hot-toast';
+import { NavBar } from '@/pages/Home/Components/nav-bar';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -76,11 +77,7 @@ const Login = () => {
 
     return (
         <div className='flex flex-col '>
-            <header className="flex items-center justify-between px-10 border-1 border-b p-4">
-                <Link to='/'>
-                    <h1 className='text-3xl font-bold bg-gradient-to-r from-green-500 to-blue-500 text-transparent bg-clip-text'>Home</h1>
-                </Link>
-            </header>
+           <NavBar />
             <div className="bg-gray-100 min-h-screen flex items-center justify-between md:px-28">
                 <img src="login-img.png" alt="" className="hidden md:block w-1/3" />
                 <div className="m-2 max-w-md w-full space-y-8 p-8 shadow-md rounded-2xl bg-white">
