@@ -10,13 +10,14 @@ const candidatureRouter = require("./candidature");
 const taskRouter = require("./task");
 const commentaireRouter = require('./commentaire')
 const kpiRouter = require('./kpi');
-
+const categoryRouter = require('./category')
 router.use("/auth",authRouter);
 router.use("/user",  authenticateToken, userRouter);
 router.use("/sujet",   sujetRouter);
 router.use("/candidature",  authenticateToken, candidatureRouter);
 router.use('/task', authenticateToken, taskRouter);
 router.use('/commentaire',authenticateToken, commentaireRouter);
+router.use('/category', categoryRouter );
 router.use('/', authenticateToken, kpiRouter);
 
 

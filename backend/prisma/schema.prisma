@@ -43,7 +43,6 @@ model sujet {
   userId        Int?
   candidature   candidature[]
   Resource      Resource[]
-  categories    category[]      @relation("SujetCategories")
   sujetCategory sujetCategory[]
 }
 
@@ -59,7 +58,6 @@ model sujetCategory {
 model category {
   id            Int             @id @default(autoincrement())
   name          String
-  sujets        sujet[]         @relation("SujetCategories")
   sujetCategory sujetCategory[]
 }
 

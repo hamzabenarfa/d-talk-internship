@@ -22,6 +22,7 @@ import Main from "./pages/Encadrant/page/main"
 import ValidationStage from "./pages/Encadrant/page/ValidationStage";
 import ProfileEnc from "./pages/Encadrant/page/ProfileEnc";
 import Job from "./pages/search";
+import Category from "./pages/Admin/page/category";
 
 function App() {
   const router = createBrowserRouter([
@@ -45,7 +46,9 @@ function App() {
                 { path: "gestion-users", element: <GestionUsers /> },
                 { path: "gestion-sujet", element: <GestionSujet /> },
                 { path: "candidats", element: <Candidat /> },
-                { path: "stagaire", element: <StagiairesAcceptes /> }
+                { path: "stagaire", element: <StagiairesAcceptes /> },
+                { path: "category", element: <Category /> }
+
               ],
             }
           ],
