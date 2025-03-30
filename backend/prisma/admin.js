@@ -4,8 +4,8 @@ const prisma = new PrismaClient();
 const bcrypt = require('bcrypt');
 
 async function main() {
-    const adminEmail = 'tasnim@admin.com';
-    const adminPassword = 'tasnim@admin.com'; 
+    const adminEmail = 'hamza@admin.com';
+    const adminPassword = 'hamza@admin.com'; 
     const hashedPassword = await bcrypt.hash(adminPassword, 10);
     
     const existingUser = await prisma.user.findFirst({
@@ -23,11 +23,11 @@ async function main() {
       data: {
         email: adminEmail,
         password: hashedPassword,
-        role: 'ADMIN',
-        nom: 'tasnim',
-        prenom: 'tasnim',
-        telephone:12312312,
-        dateDeNaissance: new Date('1997-02-24'),
+        role: 'RESPONSABLE',
+        nom: 'hamza',
+        prenom: 'benarfa',
+        telephone:22633345,
+        dateDeNaissance: new Date('2000-11-04'),
       },
     });
   }

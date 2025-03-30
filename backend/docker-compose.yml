@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: jobfinderdb_container
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password  
+      MYSQL_DATABASE: jobfinderdb      
+    ports:
+      - "3306:3306"
+    volumes:
+      - jobfinderdb_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: dtalkec_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - "8080:80"
+      
+volumes:
+  jobfinderdb_data:

@@ -28,7 +28,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
-  const router = useNavigate();
+  const navigate = useNavigate(); // Correctly renamed to `navigate`
 
   const validateForm = async () => {
     try {
@@ -61,21 +61,22 @@ export default function LoginPage() {
         password,
       });
       toast.success("Connexion réussie");
+      console.log(response.data.user.role)
       if (response.data) {
         dispatch(loginSuccess(response.data));
         switch (response.data.user.role) {
-          case "ADMIN":
-            router.push("/admin/dashboard");
+          case "RESPONSABLE":
+            navigate("/admin/dashboard");
             break;
           case "CANDIDAT":
           case "INTERN":
-            router.push("/etudiant");
+            navigate("/etudiant");
             break;
           case "PROF_SUPERVISOR":
-            router.push("/encadrant");
+            navigate("/encadrant");
             break;
           default:
-            router.push("/");
+            navigate("/");
             break;
         }
       }

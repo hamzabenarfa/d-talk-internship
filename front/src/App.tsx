@@ -35,7 +35,7 @@ function App() {
         { path: "signup", element: <Register /> },
         {
           path: "admin",
-          element: <ProtectedRoute rolesRequired={["ADMIN"]} />,
+          element: <ProtectedRoute rolesRequired={["RESPONSABLE"]} />,
           children: [
             {
               path: "",
