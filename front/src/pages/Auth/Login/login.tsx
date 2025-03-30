@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AuthHeader } from "@/components/auth-header";
 import { Mail, Lock } from "lucide-react";
-import { NavBar } from "@/pages/Home/Components/nav-bar";
+import Navbar from "@/components/navbar";
 
 const schema = yup.object().shape({
   email: yup
@@ -90,8 +90,8 @@ export default function LoginPage() {
 
   return (
     <div>
-      <NavBar />
-      <main className="min-h-screen bg-pink-50 px-4 py-12">
+      <Navbar />
+      <main className="min-h-screen  px-4 py-12">
         <div className="mx-auto max-w-md space-y-8">
           <AuthHeader
             title="Welcome Back"

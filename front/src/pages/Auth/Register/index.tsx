@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { NavBar } from "@/pages/Home/Components/nav-bar";
+import Navbar from "@/components/navbar";
 
 const schema = yup.object().shape({
   nom: yup.string().required("Nom est requis"),
@@ -128,8 +128,8 @@ export default function SignUpPage() {
 
   return (
     <div>
-      <NavBar />
-      <main className="min-h-screen bg-pink-50 px-4 py-12">
+      <Navbar />
+      <main className="min-h-screen  px-4 py-12">
         <div className="mx-auto max-w-md space-y-8">
           <AuthHeader
             title="Create Account"

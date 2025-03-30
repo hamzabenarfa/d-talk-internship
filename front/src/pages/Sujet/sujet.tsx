@@ -62,7 +62,7 @@ const Sujet = () => {
 
   return (
     <div className="w-full">
-      <Header />
+      {/* <Header /> */}
       <div className="relative flex flex-col items-center justify-center h-80 bg-gradient-to-r from-blue-400 to-purple-600">
         <h1 className="text-5xl text-white capitalize font-bold tracking-wider">
           {sujet.titre}

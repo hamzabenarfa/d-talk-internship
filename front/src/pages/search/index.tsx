@@ -1,12 +1,12 @@
 import { SearchSection } from "./components/search-section";
 import { Categories } from "./components/categories";
 import { JobCard } from "./components/job-card";
-import { NavBar } from "../Home/Components/nav-bar";
+import Navbar from "@/components/navbar";
 
 export default function Job() {
   return (
     <div className="flex flex-col ">
-      <NavBar />
+      <Navbar />
       <main className="min-h-screen mx-8 my-4 rounded-3xl py-12">
         <div className="mx-auto max-w-4xl space-y-8">
           <SearchSection />

@@ -37,7 +37,7 @@ const StagePage = () => {
 
     return (
         <div>
-            <Header />
+            {/* <Header /> */}
 
             <div className="container mx-auto max-w-screen-md px-20 py-8">
                 <div className="mb-4">
