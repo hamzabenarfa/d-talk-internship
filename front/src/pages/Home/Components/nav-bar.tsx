@@ -9,10 +9,10 @@ export function NavBar() {
         </Link>
 
       <div className="hidden md:flex items-center gap-8">
-        <Link to="/job" className="text-gray-600 hover:text-gray-900">
-          Find a Job
+      <Link to="/">
+          Home
         </Link>
-        <Link to="/job" className="text-gray-600 hover:text-gray-900">
+        <Link to="/search" className="text-gray-600 hover:text-gray-900">
         Find a Internship
         </Link>
         <Link to="#" className="text-gray-600 hover:text-gray-900">
