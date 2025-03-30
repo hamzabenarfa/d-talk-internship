@@ -8,7 +8,7 @@ import AdminDashboard from "./pages/Admin/Components/dashboard";
 import EtudiantDashboard from "./pages/Etudiant/Components/dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GestionUsers from "./pages/Admin/Components/gestion-users";
-import GestionSujet from "./pages/Admin/Components/gestion-sujet";
+import GestionSujet from "./pages/Admin/page/gestion-sujet";
 import Avancement from "./pages/Etudiant/Components/avancement";
 import Encadrant from "./pages/Encadrant/encadrant";
 import Sujet from "./pages/Sujet/sujet";

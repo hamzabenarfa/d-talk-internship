@@ -36,29 +36,22 @@ model User {
 }
 
 model sujet {
-  id            Int             @id @default(autoincrement())
-  titre         String
-  description   String
-  User          User?           @relation(fields: [userId], references: [id])
-  userId        Int?
-  candidature   candidature[]
-  Resource      Resource[]
-  sujetCategory sujetCategory[]
-}
+  id          Int           @id @default(autoincrement())
+  titre       String
+  description String
+  User        User?         @relation(fields: [userId], references: [id])
+  userId      Int?
+  candidature candidature[]
+  Resource    Resource[]
 
-model sujetCategory {
-  sujetId    Int
   categoryId Int
-  sujet      sujet    @relation(fields: [sujetId], references: [id], onDelete: Cascade)
-  category   category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-
-  @@id([sujetId, categoryId])
+  categories category[] @relation("SujetCategories")
 }
 
 model category {
-  id            Int             @id @default(autoincrement())
-  name          String
-  sujetCategory sujetCategory[]
+  id     Int     @id @default(autoincrement())
+  name   String
+  sujets sujet[] @relation("SujetCategories")
 }
 
 enum Status {

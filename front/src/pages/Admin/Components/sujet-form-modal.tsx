@@ -1,86 +1,155 @@
-import React, { useState, useEffect } from 'react';
-import { toast } from 'react-hot-toast';
-import axiosInstance from '../../../../axios-instance';
+"use client"
 
-const SujetFormModal = ({ sujet, closeModal, setSujets, editMode, token }) => {
-    const [titre, setTitre] = useState('');
-    const [description, setDescription] = useState('');
-    const [categorie, setCategorie] = useState('');
+import { useState, useEffect } from "react"
+import { toast } from "react-hot-toast"
+import { Loader2 } from "lucide-react"
+import axiosInstance from "../../../../axios-instance"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
 
-    useEffect(() => {
-        if (editMode && sujet) {
-            setTitre(sujet.titre);
-            setDescription(sujet.description);
-            setCategorie(sujet.categorie);
+const SujetFormModal = ({ sujet, closeModal, setSujets, editMode, token, categories = [] }) => {
+  // Update the formData state to include categoryId
+  const [formData, setFormData] = useState({
+    titre: "",
+    description: "",
+    categoryId: 0
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Update the useEffect to handle the data structure correctly
+  useEffect(() => {
+    if (editMode && sujet) {
+      setFormData({
+        titre: sujet.titre || "",
+        description: sujet.description || "",
+        categoryId: sujet.categoryId || 0
+      })
+    }
+  }, [editMode, sujet])
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  // Update the handleCategoryChange function
+  const handleCategoryChange = (value) => {
+    setFormData((prev) => ({
+      ...prev,
+      categoryId: Number.parseInt(value),
+    }))
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+
+    try {
+      let response
+      if (editMode) {
+        response = await axiosInstance.put(`sujet/update/${sujet.id}`, formData)
+        toast.success("Sujet modifié avec succès")
+      } else {
+        response = await axiosInstance.post("sujet/create", formData)
+        toast.success("Sujet ajouté avec succès")
+      }
+
+      // Update the sujets list
+      setSujets((prev) => {
+        if (editMode) {
+          return prev.map((item) => (item.id === sujet.id ? response.data : item))
+        } else {
+          return [...prev, response.data]
         }
-    }, [sujet, editMode]);
+      })
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const url = editMode ? `sujet/update/${sujet.id}` : 'sujet/create';
-        const method = editMode ? 'put' : 'post';
-        try {
-            const response = await axiosInstance({
-                method: method,
-                url: url,
-                data: {
-                    titre,
-                    description,
-                    category:categorie
-                }
-            });
-            if (editMode) {
-                setSujets(prev => prev.map(item => item.id === sujet.id ? response.data : item));
-            } else {
-                setSujets(prev => [...prev, response.data]);
-            }
-            toast.success(`Sujet ${editMode ? 'modifié' : 'ajouté'} avec succès!`);
-            closeModal();
-        } catch (error) {
-            console.error('Failed to submit the subject:', error);
-            toast.error(`Error: ${error.response ? error.response.data.message : error.message}`);
-        }
-    };
+      closeModal()
+    } catch (error) {
+      console.error("Erreur lors de la soumission du formulaire", error)
+      toast.error(editMode ? "Échec de la modification du sujet" : "Échec de l'ajout du sujet")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
-    return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-5 rounded-lg">
-                <h2 className="text-lg font-bold">{editMode ? 'Modifier le Sujet' : 'Ajouter un Sujet'}</h2>
-                <form onSubmit={handleSubmit}>
-                    <label htmlFor="titre" className="block text-sm font-medium text-gray-700">Titre</label>
-                    <input
-                        type="text"
-                        id="titre"
-                        value={titre}
-                        onChange={(e) => setTitre(e.target.value)}
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                        required
-                    />
-                    <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
-                    <textarea
-                        id="description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                        required
-                    />
-                    <label htmlFor="categorie" className="block text-sm font-medium text-gray-700">Catégorie</label>
-                    <input
-                        type="text"
-                        id="categorie"
-                        value={categorie}
-                        onChange={(e) => setCategorie(e.target.value)}
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                        required
-                    />
-                    <div className="flex justify-end space-x-3 mt-4">
-                        <button type="button" onClick={closeModal} className="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-700">Annuler</button>
-                        <button type="submit" className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700">{editMode ? 'Modifier' : 'Ajouter'}</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    );
-};
+  return (
+    <Dialog open={true} onOpenChange={closeModal}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>{editMode ? "Modifier le sujet" : "Ajouter un nouveau sujet"}</DialogTitle>
+          <DialogDescription>
+            {editMode ? "Modifiez les détails du sujet ci-dessous" : "Remplissez les détails du nouveau sujet"}
+          </DialogDescription>
+        </DialogHeader>
 
-export default SujetFormModal;
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="titre">Titre</Label>
+            <Input
+              id="titre"
+              name="titre"
+              value={formData.titre}
+              onChange={handleChange}
+              placeholder="Titre du sujet"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="Description du sujet"
+              required
+              rows={4}
+            />
+          </div>
+
+          {/* Update the Select component to use categoryId */}
+          <div className="space-y-2">
+            <Label htmlFor="categoryId">Catégorie</Label>
+            <Select value={formData.categoryId.toString()} onValueChange={handleCategoryChange} required>
+              <SelectTrigger>
+                <SelectValue placeholder="Sélectionner une catégorie" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((category) => (
+                  <SelectItem key={category._id || category.id} value={(category._id || category.id).toString()}>
+                    {category.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <DialogFooter className="mt-6">
+            <Button type="button" variant="outline" onClick={closeModal}>
+              Annuler
+            </Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {editMode ? "Mettre à jour" : "Ajouter"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+export default SujetFormModal
+

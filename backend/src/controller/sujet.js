@@ -39,7 +39,7 @@ const createSujet = async (req, res) => {
     const sujet = await prisma.sujet.create({
       data: {
         ...sujets,
-
+        categoryId:+sujets.categoryId,
         userId,
       },
     });

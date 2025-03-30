@@ -161,7 +161,7 @@ const Category = () => {
                     </TableHeader>
                     <TableBody>
                       {categories.map((category) => (
-                        <TableRow key={category._id}>
+                        <TableRow key={category.id}>
                           <TableCell>
                             <Badge variant="outline" className="font-normal">
                               {category.name}
@@ -171,7 +171,7 @@ const Category = () => {
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => setEditCategory({ id: category._id, name: category.name })}
+                              onClick={() => setEditCategory({ id: category.id, name: category.name })}
                               className="h-8 w-8 p-0 mr-2"
                             >
                               <span className="sr-only">Edit</span>
@@ -180,7 +180,7 @@ const Category = () => {
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => handleDeleteCategory(category._id)}
+                              onClick={() => handleDeleteCategory(category.id)}
                               className="h-8 w-8 p-0 text-destructive hover:text-destructive"
                             >
                               <span className="sr-only">Delete</span>
