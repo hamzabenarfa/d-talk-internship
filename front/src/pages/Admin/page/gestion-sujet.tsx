@@ -65,7 +65,8 @@ export default function GestionSujet() {
       filtered = filtered.filter(
         (sujet) =>
           sujet.titre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          sujet.description.toLowerCase().includes(searchTerm.toLowerCase()),
+          sujet.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          getWorkLabel(sujet.work).toLowerCase().includes(searchTerm.toLowerCase()),
       )
     }
 
@@ -133,6 +134,39 @@ export default function GestionSujet() {
     return category ? category.name : "Non catégorisé"
   }
 
+  // Add helper functions for formatting and displaying work arrangement
+  // Add these functions before the return statement
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A"
+    return new Date(dateString).toLocaleDateString()
+  }
+
+  const getWorkLabel = (work) => {
+    switch (work) {
+      case "ONSITE":
+        return "Sur site"
+      case "REMOTE":
+        return "À distance"
+      case "HYBRID":
+        return "Hybride"
+      default:
+        return work || "N/A"
+    }
+  }
+
+  const getWorkBadgeVariant = (work) => {
+    switch (work) {
+      case "ONSITE":
+        return "default"
+      case "REMOTE":
+        return "secondary"
+      case "HYBRID":
+        return "outline"
+      default:
+        return "outline"
+    }
+  }
+
   return (
     <div className="container mx-auto py-8 px-4">
       <Card>
@@ -185,6 +219,9 @@ export default function GestionSujet() {
                     <TableHead>Titre</TableHead>
                     <TableHead>Description</TableHead>
                     <TableHead>Catégorie</TableHead>
+                    <TableHead>Durée</TableHead>
+                    <TableHead>Date limite</TableHead>
+                    <TableHead>Type de travail</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -204,6 +241,15 @@ export default function GestionSujet() {
                           <TableCell>
                             <Skeleton className="h-6 w-24" />
                           </TableCell>
+                          <TableCell>
+                            <Skeleton className="h-6 w-16" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton className="h-6 w-24" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton className="h-6 w-20" />
+                          </TableCell>
                           <TableCell className="text-right">
                             <Skeleton className="h-6 w-24 ml-auto" />
                           </TableCell>
@@ -211,7 +257,7 @@ export default function GestionSujet() {
                       ))
                   ) : filteredSujets.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                      <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                         Aucun sujet trouvé
                       </TableCell>
                     </TableRow>
@@ -224,6 +270,11 @@ export default function GestionSujet() {
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline">{getCategoryName(sujet)}</Badge>
+                        </TableCell>
+                        <TableCell>{sujet.duration} jours</TableCell>
+                        <TableCell>{formatDate(sujet.deadline)}</TableCell>
+                        <TableCell>
+                          <Badge variant={getWorkBadgeVariant(sujet.work)}>{getWorkLabel(sujet.work)}</Badge>
                         </TableCell>
                         <TableCell className="text-right">
                           <Button

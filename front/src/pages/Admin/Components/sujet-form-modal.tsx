@@ -19,11 +19,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label"
 
 const SujetFormModal = ({ sujet, closeModal, setSujets, editMode, token, categories = [] }) => {
-  // Update the formData state to include categoryId
+  // Update the formData state to include the new fields
   const [formData, setFormData] = useState({
     titre: "",
     description: "",
-    categoryId: 0
+    categoryId: 0,
+    duration: 0,
+    deadline: sujet?.deadline ? new Date(sujet.deadline).toISOString().split("T")[0] : "",
+    work: "ONSITE",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -33,7 +36,10 @@ const SujetFormModal = ({ sujet, closeModal, setSujets, editMode, token, categor
       setFormData({
         titre: sujet.titre || "",
         description: sujet.description || "",
-        categoryId: sujet.categoryId || 0
+        categoryId: sujet.categoryId || 0,
+        duration: sujet.duration || 0,
+        deadline: sujet.deadline ? new Date(sujet.deadline).toISOString().split("T")[0] : "",
+        work: sujet.work || "ONSITE",
       })
     }
   }, [editMode, sujet])
@@ -47,7 +53,7 @@ const SujetFormModal = ({ sujet, closeModal, setSujets, editMode, token, categor
   const handleCategoryChange = (value) => {
     setFormData((prev) => ({
       ...prev,
-      categoryId: Number.parseInt(value),
+      categoryId: Number.parseInt(value)
     }))
   }
 
@@ -132,6 +138,50 @@ const SujetFormModal = ({ sujet, closeModal, setSujets, editMode, token, categor
                     {category.name}
                   </SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="duration">Durée (jours)</Label>
+            <Input
+              id="duration"
+              name="duration"
+              type="number"
+              value={formData.duration}
+              onChange={handleChange}
+              placeholder="Durée en jours"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="deadline">Date limite</Label>
+            <Input
+              id="deadline"
+              name="deadline"
+              type="date"
+              value={formData.deadline}
+              onChange={handleChange}
+              placeholder="Date limite"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="work">Type de travail</Label>
+            <Select
+              value={formData.work}
+              onValueChange={(value) => setFormData((prev) => ({ ...prev, work: value }))}
+              required
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Sélectionner le type de travail" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ONSITE">Sur site</SelectItem>
+                <SelectItem value="REMOTE">À distance</SelectItem>
+                <SelectItem value="HYBRID">Hybride</SelectItem>
               </SelectContent>
             </Select>
           </div>

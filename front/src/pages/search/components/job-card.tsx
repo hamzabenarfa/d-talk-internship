@@ -4,7 +4,7 @@ import { Separator } from "@/components/ui/separator"
 
 interface JobCardProps {
   company: string
-  title: string
+  titre: string
   location: string
   type: string
   category: string
@@ -16,7 +16,7 @@ interface JobCardProps {
 
 export function JobCard({
   company,
-  title,
+  titre,
   location,
   type,
   category,
@@ -36,14 +36,14 @@ export function JobCard({
               className="h-8 w-8 rounded-full object-cover"
             />
           )}
-          <span className="text-lg font-medium">{company}</span>
+          <span className="text-lg font-medium">{"Internship"}</span>
         </div>
         <Button variant="ghost" size="icon" className="rounded-full">
           <Bookmark className="h-5 w-5" />
         </Button>
       </div>
       <Separator className="my-4" />
-      <h3 className="mb-4 text-xl font-semibold">{title}</h3>
+      <h3 className="mb-4 text-xl font-semibold">{titre}</h3>
       <div className="mb-4 grid grid-cols-2 gap-3 font-semibold">
         <div className="flex items-center gap-2">
           <MapPin className="h-4 w-4 text-gray-500" />

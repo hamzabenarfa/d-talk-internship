@@ -1,5 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const { formatISO } = require("date-fns");
 
 const getSujetById = async (req, res) => {
   const { id } = req.params;
@@ -41,6 +42,8 @@ const getSujetByCategory = async (req, res) => {
 };
 
 const createSujet = async (req, res) => {
+  const rawDeadline = req.body.deadline
+  const formattedDeadline = formatISO(new Date(rawDeadline), { representation: "complete" });
   const sujets = req.body;
   const userId = req.user.id;
   const role = req.user.role;
@@ -55,6 +58,7 @@ const createSujet = async (req, res) => {
       data: {
         ...sujets,
         categoryId:+sujets.categoryId,
+        deadline:formattedDeadline,
         userId,
       },
     });

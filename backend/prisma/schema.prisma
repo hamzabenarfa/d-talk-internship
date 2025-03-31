@@ -34,17 +34,25 @@ model User {
   Resource    Resource[]
   Task        Task[]
 }
-
+enum WorkArrangement {
+  ONSITE // Fully in-office work
+  REMOTE // Fully remote work (any location)
+  HYBRID // Combination of onsite and remote work
+}
 model sujet {
   id          Int           @id @default(autoincrement())
   titre       String
   description String
+  duration String
+  deadline  DateTime?
+  work WorkArrangement
+
   User        User?         @relation(fields: [userId], references: [id])
   userId      Int?
+  categoryId Int
+
   candidature candidature[]
   Resource    Resource[]
-
-  categoryId Int
   categories category[] @relation("SujetCategories")
 }
 

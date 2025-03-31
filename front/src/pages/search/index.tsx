@@ -10,7 +10,7 @@ import Navbar from "@/components/navbar"
 export default function Job() {
   const [sujets, setSujets] = useState([])
   const [categories, setCategories] = useState([])
-  console.log("🚀 ~ Job ~ categories:", categories)
+  console.log("🚀 ~ Job ~ categories:", sujets)
   const [selectedCategory, setSelectedCategory] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -79,7 +79,7 @@ export default function Job() {
   return (
     <div className="flex flex-col">
       <Navbar />
-      <main className="min-h-screen mx-8 my-4 rounded-3xl py-12">
+      <main className="min-h-screen mx-8 my-4 rounded-3xl py-10">
         <div className="mx-auto max-w-4xl space-y-8">
           <SearchSection />
           <div className="mx-auto max-w-2xl">
@@ -101,7 +101,7 @@ export default function Job() {
                   <JobCard
                     key={sujet.id || index}
                     company={sujet.company || "Job"}
-                    title={sujet.title || "Position"}
+                    titre={sujet.titre || "Position"}
                     location={sujet.location || "Not specified"}
                     type={sujet.type || "Full-time"}
                     category={sujet.category || "Technology"}

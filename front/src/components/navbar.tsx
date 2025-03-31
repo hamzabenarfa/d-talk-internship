@@ -11,15 +11,12 @@ export default function Navbar() {
 
   const navItems = [
     { name: "Home", to: "/" },
-    { name: "Internship", to: "search" },
-    { name: "Offers", to: "#offers" },
-    { name: "Products", to: "#products" },
-    { name: "Designers Profile", to: "#designers" },
+    { name: "Internship", to: "/search" },
   ];
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#f9f5f0]/80 backdrop-blur-md border-b border-[#b89048]/10">
-      <div className="container flex items-center justify-between h-16 px-4 mx-auto">
+      <div className="container flex items-center justify-between lg:justify-evenly h-16 px-4 mx-auto">
         <Link to="/">
           <img src="/public/logo.png" alt="logo" className=" w-20" />
         </Link>
