@@ -25,6 +25,21 @@ const getSujet = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch sujet" });
   }
 };
+
+const getSujetByCategory = async (req, res) => {
+  try {
+    const categoryId = req.params.categoryId
+    const sujet = await prisma.sujet.findMany({
+      where:{
+        categoryId:+categoryId
+      }
+    });
+    res.json(sujet);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch sujet" });
+  }
+};
+
 const createSujet = async (req, res) => {
   const sujets = req.body;
   const userId = req.user.id;
@@ -97,4 +112,5 @@ module.exports = {
   updateSujet,
   deleteSujet,
   getMySujet,
+  getSujetByCategory
 };

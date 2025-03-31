@@ -5,29 +5,29 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 
-// router.get('/candidatures/monthly',async (req, res) => {
-//     try {
-//       const results = await prisma.$queryRaw`
-//         SELECT EXTRACT(MONTH FROM "createdAt") as month, COUNT(*) as count
-//         FROM "Candidature"
-//         GROUP BY month
-//       `;
+router.get('/candidatures/monthly',async (req, res) => {
+    try {
+      const results = await prisma.$queryRaw`
+        SELECT EXTRACT(MONTH FROM "createdAt") as month, COUNT(*) as count
+        FROM "Candidature"
+        GROUP BY month
+      `;
   
-//       const candidaturesCountByMonth = {};
+      const candidaturesCountByMonth = {};
   
-//       results.forEach(result => {
-//         const month = result.month;
-//         const count = result.count;
-//         const monthName = getMonthName(month);
-//         candidaturesCountByMonth[monthName] = count;
-//       });
-//       console.log(candidaturesCountByMonth)
-//       return res.json(candidaturesCountByMonth);
-//     } catch (error) {
-//       console.error(error);
-//       return res.status(500).send('Error fetching data');
-//     }
-//   })
+      results.forEach(result => {
+        const month = result.month;
+        const count = result.count;
+        const monthName = getMonthName(month);
+        candidaturesCountByMonth[monthName] = count;
+      });
+      console.log(candidaturesCountByMonth)
+      return res.json(candidaturesCountByMonth);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send('Error fetching data');
+    }
+  })
 
 router.get('/candidatureBySujet')
 

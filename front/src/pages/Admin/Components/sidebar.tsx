@@ -1,94 +1,137 @@
-import React from 'react';
-import { AiOutlineUser, AiOutlineLogout, AiFillFile } from 'react-icons/ai';
-import { Link, NavLink } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../../../redux/actions/authActions';
-import { MdCategory, MdOutlineAssignmentInd } from 'react-icons/md';
-import { PiStudentFill } from 'react-icons/pi';
+"use client"
+
+import { useDispatch, useSelector } from "react-redux"
+import { Link, NavLink, useLocation } from "react-router-dom"
+import { logout } from "../../../redux/actions/authActions"
+import {
+  LayoutDashboard,
+  Users,
+  FileText,
+  FolderKanban,
+  GraduationCap,
+  UserCheck,
+  LogOut,
+  ChevronRight,
+} from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Separator } from "@/components/ui/separator"
 
 const Sidebar = () => {
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user.user);
+  const dispatch = useDispatch()
+  const user = useSelector((state) => state.auth.user.user)
+  const location = useLocation()
 
-  // Define the navigation links
+  // Define the navigation links with Lucide icons
   const navLinks = [
     {
-      path: '/admin/dashboard',
-      icon: <AiOutlineUser className="text-lg" />,
-      label: 'Dashboard',
+      path: "/admin/dashboard",
+      icon: <LayoutDashboard className="h-5 w-5" />,
+      label: "Dashboard",
     },
     {
-      path: '/admin/gestion-users',
-      icon: <AiOutlineUser className="text-lg" />,
-      label: 'Gestion Users',
+      path: "/admin/gestion-users",
+      icon: <Users className="h-5 w-5" />,
+      label: "Gestion Users",
     },
     {
-      path: '/admin/gestion-sujet',
-      icon: <AiFillFile className="text-lg" />,
-      label: 'Gestion Sujet',
+      path: "/admin/gestion-sujet",
+      icon: <FileText className="h-5 w-5" />,
+      label: "Gestion Sujet",
     },
     {
-      path: '/admin/category',
-      icon: <MdCategory className="text-lg" />,
-      label: 'Gestion Category',
+      path: "/admin/category",
+      icon: <FolderKanban className="h-5 w-5" />,
+      label: "Gestion Category",
     },
     {
-      path: '/admin/candidats',
-      icon: <MdOutlineAssignmentInd className="text-lg" />,
-      label: 'Candidats Stagiaires',
+      path: "/admin/candidats",
+      icon: <UserCheck className="h-5 w-5" />,
+      label: "Candidats Stagiaires",
     },
     {
-      path: '/admin/stagaire',
-      icon: <PiStudentFill className="text-lg" />,
-      label: 'Stagiaires Acceptes',
+      path: "/admin/stagaire",
+      icon: <GraduationCap className="h-5 w-5" />,
+      label: "Stagiaires Acceptes",
     },
-  ];
+  ]
 
   const handleLogout = () => {
-    dispatch(logout());
-  };
+    dispatch(logout())
+  }
+
+  // Get user initials for avatar
+  const getInitials = (name) => {
+    if (!name) return "U"
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+  }
 
   return (
-    <div className="w-64 min-h-screen bg-gray-900 text-gray-200">
-      <div className="w-60 p-5">
-        {/* User Info */}
-        <div className="flex items-center justify-between bg-gray-800 p-3 rounded-md">
-          <AiOutlineUser className="text-lg text-blue-500 hover:text-blue-700 cursor-pointer" />
-          <div className="flex-1 ml-4">
-            <span className="block text-sm font-medium">{user.nom}</span>
+    <div className="w-64 h-screen bg-background border-r flex flex-col">
+      {/* Header with user info */}
+      <div className="p-4">
+        <div className="flex items-center space-x-3 py-4">
+          <Avatar className="h-10 w-10">
+            <AvatarFallback className="bg-primary text-primary-foreground">{getInitials(user.nom)}</AvatarFallback>
+          </Avatar>
+          <div className="space-y-1">
+            <p className="text-sm font-medium leading-none">{user.nom}</p>
+            <p className="text-xs text-muted-foreground">{user.email}</p>
           </div>
         </div>
+      </div>
 
-        {/* Navigation Links */}
-        <ul className="mt-6 space-y-2">
+      <Separator />
+
+      {/* Navigation Links */}
+      <nav className="flex-1 p-4">
+        <div className="space-y-1">
           {navLinks.map((link, index) => (
-            <li key={index}>
-              <NavLink
-                to={link.path}
-                className={({ isActive }) =>
-                  `flex items-center gap-2 text-blue-500 hover:text-blue-700 cursor-pointer p-2 rounded-md ${
-                    isActive ? 'bg-gray-700' : ''
-                  }`
-                }
-              >
-                {link.icon} {link.label}
-              </NavLink>
-            </li>
+            <NavLink
+              key={index}
+              to={link.path}
+              className={({ isActive }) =>
+                cn(
+                  "flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
+                  isActive
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                )
+              }
+            >
+              <div className="flex items-center gap-3">
+                {link.icon}
+                <span>{link.label}</span>
+              </div>
+              <ChevronRight className="h-4 w-4 opacity-50" />
+            </NavLink>
           ))}
-        </ul>
+        </div>
+      </nav>
 
-        {/* Logout Button */}
-        <Link
-          to="/"
+      {/* Footer with logout */}
+      <div className="p-4 mt-auto">
+        <Separator className="mb-4" />
+        <Button
+          variant="ghost"
+          className="w-full justify-start text-muted-foreground hover:text-destructive"
           onClick={handleLogout}
-          className="absolute bottom-5 flex items-center text-blue-500 hover:text-blue-700 cursor-pointer p-2 rounded-md"
+          asChild
         >
-          <AiOutlineLogout className="text-lg" />
-          <span className="ml-4 text-sm font-medium">Logout</span>
-        </Link>
+          <Link to="/">
+            <LogOut className="mr-2 h-4 w-4" />
+            Déconnexion
+          </Link>
+        </Button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Sidebar;
+export default Sidebar
+

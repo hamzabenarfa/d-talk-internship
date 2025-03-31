@@ -11,6 +11,7 @@ const {
   updateSujet,
   deleteSujet,
   getMySujet,
+  getSujetByCategory
 } = require("../controller/sujet");
 
 router.get("/", getSujet);
@@ -18,6 +19,8 @@ router.get("/", getSujet);
 router.get("/my-Sujet", authenticateToken,getMySujet);
 
 router.get("/:id", getSujetById);
+router.get("/category/:categoryId", getSujetByCategory);
+
 router.post('/create', authenticateToken, createSujet); 
 
 // router.post('/', multer(multerConfig).array('files', 10), createSujet); 
