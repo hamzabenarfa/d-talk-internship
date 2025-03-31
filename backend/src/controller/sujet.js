@@ -80,13 +80,19 @@ const createSujet = async (req, res) => {
 const updateSujet = async (req, res) => {
   const { id } = req.params;
   const sujet = req.body;
+  const rawDeadline = req.body.deadline
+  const formattedDeadline = formatISO(new Date(rawDeadline), { representation: "complete" });
   try {
     const updatedSujet = await prisma.sujet.update({
       where: { id: parseInt(id) },
-      data: sujet,
+      data: {
+        ...sujet,
+        deadline:formattedDeadline,
+      },
     });
     res.json(updatedSujet);
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: "Failed to update sujet" });
   }
 };

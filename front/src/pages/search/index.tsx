@@ -10,7 +10,6 @@ import Navbar from "@/components/navbar"
 export default function Job() {
   const [sujets, setSujets] = useState([])
   const [categories, setCategories] = useState([])
-  console.log("🚀 ~ Job ~ categories:", sujets)
   const [selectedCategory, setSelectedCategory] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -103,8 +102,8 @@ export default function Job() {
                     company={sujet.company || "Job"}
                     titre={sujet.titre || "Position"}
                     location={sujet.location || "Not specified"}
-                    type={sujet.type || "Full-time"}
-                    category={sujet.category || "Technology"}
+                    type={sujet.work || "Full-time"}
+                    category={sujet.category.name || "Technology"}
                     salary={sujet.salary || "N/A"}
                     postedTime={sujet.postedTime || "RECENTLY"}
                     backgroundColor={index % 4 === 0 ? "bg-pink-50/50" : "bg-gray-50"}
