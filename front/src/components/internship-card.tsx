@@ -24,7 +24,7 @@ export default function InternshipCard({
       <div className="mb-4">
         <Badge className="mb-2 bg-[#b89048] hover:bg-[#b89048]/90">{type}</Badge>
         <h3 className="mb-1 text-xl font-bold">{title}</h3>
-        <p className="text-sm text-[#b89048]">{department}</p>
+        <p className="text-sm text-[#b89048] capitalize  ">{department}</p>
       </div>
 
       <div className="mb-4 space-y-2">

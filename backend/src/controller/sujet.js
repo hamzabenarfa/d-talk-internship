@@ -20,8 +20,16 @@ const getSujetById = async (req, res) => {
 
 const getSujet = async (req, res) => {
   try {
-    const sujet = await prisma.sujet.findMany();
-    res.json(sujet);
+    const sujets = await prisma.sujet.findMany({
+      include: {
+        category: {
+          select: {
+            name: true, // Only select the 'name' field from the Category model
+          },
+        },
+      },
+    });
+    res.json(sujets);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch sujet" });
   }
