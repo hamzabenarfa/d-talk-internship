@@ -243,10 +243,8 @@ const Home = () => {
           <div className="relative">
             <div className="relative overflow-hidden rounded-2xl shadow-xl">
               <img
-                src="/placeholder.svg?height=600&width=800"
+                src="/images/happy.jpg"
                 alt="Application Process"
-                width={800}
-                height={600}
                 className="object-cover w-full h-full"
               />
             </div>
