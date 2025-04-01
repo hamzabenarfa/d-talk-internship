@@ -5,7 +5,7 @@ import Register from "./pages/Auth/Register";
 import Admin from "./pages/Admin/admin";
 import Etudiant from "./pages/Etudiant/etudiant";
 import AdminDashboard from "./pages/Admin/Components/dashboard";
-import EtudiantDashboard from "./pages/Etudiant/Components/dashboard";
+import EtudiantDashboard from "./pages/Etudiant/page/dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GestionUsers from "./pages/Admin/page/gestion-users";
 import GestionSujet from "./pages/Admin/page/gestion-sujet";
@@ -61,7 +61,6 @@ function App() {
               path: "",
               element: <Etudiant />,
               children: [
-                { path: "liste-stage", element: <ListeStage /> },
                 { path: "", element: <EtudiantDashboard /> },
                 { path: "avancement", element: <Avancement /> },
                 { path: "sujet", element: <Avancement /> },

@@ -45,7 +45,7 @@ const Sidebar = () => {
         <ul className="flex  flex-col justify-center  w-full mt-6">
         
           <li className="flex items-center gap-1  text-blue-500 hover:text-blue-700 cursor-pointer p-2 rounded-md">
-            <NavLink to="/etudiant/liste-stage" className=" text-sm font-medium">
+            <NavLink to="/etudiant" className=" text-sm font-medium">
               liste des stages
             </NavLink>
           </li>

@@ -9,30 +9,33 @@ const EtudiantDashboard = () => {
 
   useEffect(() => {
     getSujet();
-  });
+  }, []); 
+
+
   useEffect(() => {
     const filtered = results.filter((internship) =>
       internship.titre.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredResults(filtered);
   }, [searchTerm, results]);
+
   async function getSujet() {
     try {
       const res = await axios.get("http://localhost:4000/sujet");
       setResults(res.data);
-      setFilteredResults(res.data);
+      setFilteredResults(res.data); 
     } catch (error) {
       console.log(error);
     }
   }
-
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
+
   return (
     <div className="flex flex-col gap-10 bg-grey-100 overflow-hidden sm:rounded-lg">
-      <h1 className=" text-4xl font-semibold capitalize">Liste des stages :</h1>
-      <div className=" ">
+      <h1 className="text-4xl font-semibold capitalize">Liste des stages :</h1>
+      <div className="">
         <div className="mb-4">
           <input
             type="text"
