@@ -79,7 +79,6 @@ export const TacheRapport: React.FC = () => {
     const fetchData = async () => {
       try {
         const response = await axiosInstance.get('kpi/valide-nonvalide');
-        console.log("🚀 ~ fetchData ~ response:", response.data);
         const rawData = response.data;
 
         // Update state with fetched data

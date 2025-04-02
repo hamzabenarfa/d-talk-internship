@@ -9,7 +9,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import axiosInstance from '../../../../axios-instance';
+import axiosInstance from '@/axios-instance';
 
 // Register Chart.js components
 ChartJS.register(
@@ -40,10 +40,19 @@ export const options = {
         display: true, 
         text: 'Nombre de candidatures', 
         color: '#666', 
+        ticks: {
+          stepSize: 1,
+          precision: 0,
+        },
         font: {
           size: 14, 
           weight: 'bold', 
         },
+        
+      },
+      ticks: {
+        stepSize: 1,
+        precision: 0,
       },
     },
     x: {
@@ -78,6 +87,7 @@ export function BarChartCandidatSujet() {
           label: 'Nombre de candidatures',
           data: counts,
           backgroundColor: 'rgba(53, 162, 235, 0.5)',
+          
         };
 
         // Update chart data state
