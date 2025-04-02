@@ -1,6 +1,7 @@
 import { Bookmark, MapPin, Clock, Building2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { Link } from "react-router-dom"
 
 interface JobCardProps {
   company: string
@@ -15,6 +16,7 @@ interface JobCardProps {
 }
 
 export function JobCard({
+  id,
   company,
   titre,
   location,
@@ -62,7 +64,9 @@ export function JobCard({
           <span className="text-sm text-gray-600">{salary ? `$${salary}/monthly` : "Salary not specified"}</span>
         </div>
       </div>
-      <Button className="w-full rounded-full bg-black text-white hover:bg-black/90">Apply</Button>
+      <Link to={`/sujet/${id}`}>
+        <Button className="w-full rounded-full bg-black text-white hover:bg-black/90">Details</Button>
+      </Link>
       <p className="mt-3 text-center text-sm text-gray-500">POSTED {postedTime}</p>
     </div>
   )

@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import axiosInstance from "../../../axios-instance";
 import Toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { MapPin, Clock, Building2, FileText } from "lucide-react";
 
 const Sujet = () => {
   const role = useSelector((state) => state.auth.user?.user?.role);
@@ -53,7 +54,6 @@ const Sujet = () => {
       });
       Toast.success("Files submitted successfully!");
       navigate("/etudiant");
-
     } catch (error) {
       console.error("Error submitting files:", error);
       Toast.error(error.response?.data?.error || "An error occurred");
@@ -67,10 +67,35 @@ const Sujet = () => {
         <h1 className="text-5xl text-white capitalize font-bold tracking-wider">
           {sujet.titre}
         </h1>
-        <p className="text-xl font-medium text-gray-800">{sujet.description}</p>
+        <p className="text-xl font-medium text-gray-200">{sujet.description}</p>
       </div>
-      {role === "CANDIDAT" ? (
-        <>
+
+      <div className="container mx-auto p-6 space-y-6">
+        {/* Job Details Section */}
+        <div className="bg-gray-50 rounded-xl p-6 shadow-md">
+          <h3 className="text-2xl font-semibold mb-4">Details</h3>
+          <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+            <div className="flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-gray-500" />
+              <span>{sujet.location || "Location not specified"}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-gray-500" />
+              <span>{sujet.duration || "Duration not specified"}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Building2 className="h-4 w-4 text-gray-500" />
+              <span>{sujet.category || "Category not specified"}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <FileText className="h-4 w-4 text-gray-500" />
+              <span>{sujet.type || "Type not specified"}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Apply Section */}
+        {role === "CANDIDAT" ? (
           <form
             className="flex flex-col items-center justify-center h-auto p-4 w-full"
             onSubmit={handleSubmit}
@@ -80,7 +105,7 @@ const Sujet = () => {
                 htmlFor="cvFile"
                 className="block mb-2 text-sm font-medium text-gray-900"
               >
-                Documents
+                Upload Documents
               </label>
               <input
                 type="file"
@@ -95,19 +120,19 @@ const Sujet = () => {
 
             <button
               type="submit"
-              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+              className="text-white bg-black hover:bg-black/90 focus:ring-4 focus:outline-none focus:ring-black/50 font-medium rounded-full text-sm px-5 py-2.5 text-center"
             >
-              Deposer
+              Submit Application
             </button>
           </form>
-        </>
-      ) : (
-        <div className="flex items-center justify-center pt-40">
-          <h1 className="text-2xl font-semibold">
-            Please login as CANDIDAT to apply for an internship ...
-          </h1>
-        </div>
-      )}
+        ) : (
+          <div className="flex items-center justify-center pt-10">
+            <h1 className="text-2xl font-semibold text-gray-700">
+              Please log in as a CANDIDAT to apply for this internship.
+            </h1>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

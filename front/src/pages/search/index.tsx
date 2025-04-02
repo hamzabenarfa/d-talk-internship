@@ -98,6 +98,7 @@ export default function Job() {
               {sujets && sujets.length > 0 ? (
                 sujets.map((sujet, index) => (
                   <JobCard
+                    id={sujet.id}
                     key={sujet.id || index}
                     company={sujet.company || "Job"}
                     titre={sujet.titre || "Position"}
