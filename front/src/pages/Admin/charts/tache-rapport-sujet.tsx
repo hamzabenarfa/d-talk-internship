@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -9,22 +9,15 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import axiosInstance from '../../../../axios-instance';
+import axiosInstance from '@/axios-instance';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export const options = {
   responsive: true,
   plugins: {
     legend: {
-      position: 'top' as const,
+      position: 'top',
     },
     title: {
       display: true,
@@ -32,16 +25,20 @@ export const options = {
     },
   },
   scales: {
-    y: { 
-      beginAtZero: true, 
+    y: {
+      beginAtZero: true,
       title: {
-        display: true, 
-        text: 'Nombre de tâches', 
-        color: '#666', 
+        display: true,
+        text: 'Nombre de tâches',
+        color: '#666',
         font: {
-          size: 14, 
-          weight: 'bold', 
+          size: 14,
+          weight: 'bold',
         },
+      },
+      ticks: {
+        stepSize: 1,
+        precision: 0,
       },
     },
     x: {
@@ -69,12 +66,12 @@ export function TacheRapportSujet() {
         const labels = Object.keys(data);
         const dataset = {
           label: 'Nombre de tâches',
-          data: Object.values(data),
+          data: Object.values(data).map(Number), // Ensure all values are integers
           backgroundColor: 'rgba(53, 162, 235, 0.5)',
         };
-        
+
         setChartData({
-          labels: labels,
+          labels,
           datasets: [dataset],
         });
       } catch (error) {

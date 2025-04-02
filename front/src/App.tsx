@@ -4,7 +4,7 @@ import Login from "./pages/Auth/Login/login";
 import Register from "./pages/Auth/Register";
 import Admin from "./pages/Admin/admin";
 import Etudiant from "./pages/Etudiant/etudiant";
-import AdminDashboard from "./pages/Admin/Components/dashboard";
+import AdminDashboard from "./pages/Admin/page/dashboard";
 import EtudiantDashboard from "./pages/Etudiant/page/dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GestionUsers from "./pages/Admin/page/gestion-users";

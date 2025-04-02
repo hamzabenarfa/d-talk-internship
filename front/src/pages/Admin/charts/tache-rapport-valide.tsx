@@ -3,25 +3,25 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  LineElement,
-  PointElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import axiosInstance from '../../../../axios-instance';
 
+// Register Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  LineElement,
-  PointElement,
+  BarElement,
   Title,
   Tooltip,
   Legend
 );
 
+// Chart options
 export const options = {
   responsive: true,
   plugins: {
@@ -60,16 +60,17 @@ export const options = {
   },
 };
 
+// Component
 export const TacheRapport: React.FC = () => {
   const [data, setData] = useState({
     labels: ['Non Validées', 'Validées'],
     datasets: [
       {
         label: 'Taches',
-        data: [0, 0],
-        borderColor: 'rgba(53, 162, 235, 0.9)',
-        backgroundColor: 'rgb a(53, 162, 235, 0.5)',
-        fill: false,
+        data: [0, 0], // Initial data
+        backgroundColor: ['rgba(255, 99, 132, 0.6)', 'rgba(53, 162, 235, 0.6)'], // Colors for bars
+        borderColor: ['rgba(255, 99, 132, 1)', 'rgba(53, 162, 235, 1)'],
+        borderWidth: 1,
       },
     ],
   });
@@ -78,16 +79,19 @@ export const TacheRapport: React.FC = () => {
     const fetchData = async () => {
       try {
         const response = await axiosInstance.get('kpi/valide-nonvalide');
+        console.log("🚀 ~ fetchData ~ response:", response.data);
         const rawData = response.data;
+
+        // Update state with fetched data
         setData({
           labels: ['Non Validées', 'Validées'],
           datasets: [
             {
               label: 'Taches',
               data: [rawData.nonValideCount, rawData.valideCount],
-              borderColor: 'rgba(53, 162, 235, 0.9)',
-              backgroundColor: 'rgba(53, 162, 235, 0.5)',
-              fill: false,
+              backgroundColor: ['rgba(255, 99, 132, 0.6)', 'rgba(53, 162, 235, 0.6)'],
+              borderColor: ['rgba(255, 99, 132, 1)', 'rgba(53, 162, 235, 1)'],
+              borderWidth: 1,
             },
           ],
         });
@@ -99,7 +103,7 @@ export const TacheRapport: React.FC = () => {
     fetchData();
   }, []);
 
-  return <Line options={options} data={data} />;
+  return <Bar options={options} data={data} />;
 };
 
 export default TacheRapport;

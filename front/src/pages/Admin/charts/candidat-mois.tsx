@@ -11,37 +11,34 @@ import {
 import { Bar } from 'react-chartjs-2';
 import axiosInstance from '@/axios-instance';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export const options = {
   responsive: true,
   plugins: {
     legend: {
-      position: 'top' as const,
+      position: 'top',
     },
     title: {
       display: true,
-      text: 'Nombre de candidature par mois',
+      text: 'Nombre de candidatures par mois',
     },
   },
   scales: {
-    y: { 
-      beginAtZero: true, 
+    y: {
+      beginAtZero: true,
       title: {
-        display: true, 
-        text: 'Nombre de candidatures', 
-        color: '#666', 
+        display: true,
+        text: 'Nombre de candidatures',
+        color: '#666',
         font: {
-          size: 14, 
-          weight: 'bold', 
+          size: 14,
+          weight: 'bold',
         },
+      },
+      ticks: {
+        stepSize: 1, // Ensure steps are incremented by 1
+        precision: 0, // Ensure no decimal places
       },
     },
     x: {
@@ -63,7 +60,7 @@ export const BarChart: React.FC = () => {
     labels: [],
     datasets: [
       {
-        label: 'Mois',
+        label: 'Candidatures',
         data: [],
         backgroundColor: 'rgba(53, 162, 235, 0.5)',
       },
@@ -74,11 +71,10 @@ export const BarChart: React.FC = () => {
     const fetchData = async () => {
       try {
         const response = await axiosInstance.get('kpi/candidatures/monthly');
-        console.log("🚀 ~ fetchData ~ response:", response.data)
         const rawData = response.data;
         const labels = Object.keys(rawData);
-        const values = Object.values(rawData);
-        
+        const values = Object.values(rawData).map(Number); // Ensure all values are integers
+
         setData({
           labels,
           datasets: [

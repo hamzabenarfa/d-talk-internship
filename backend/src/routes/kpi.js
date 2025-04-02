@@ -134,20 +134,65 @@ router.get("/valide-nonvalide", async (req, res, next) => {
 
 router.get('/candidatures/monthly', async (req, res) => {
   try {
-    const result = await prisma.$queryRaw`
-      SELECT 
-        DATE_FORMAT("createdAt", '%Y-%m') AS month,
-        COUNT(*) AS count
-      FROM "candidature"
-      GROUP BY DATE_FORMAT("createdAt", '%Y-%m')
-      ORDER BY month ASC
-    `;
+    // Fetch all candidatures from the database
+    const candidatures = await prisma.candidature.findMany({
+      select: {
+        createdAt: true, // Only fetch the createdAt field
+      },
+    });
 
-    // Format the result for the frontend
-    const formattedData = result.map((row) => ({
-      month: row.month, // YYYY-MM format
-      count: Number(row.count),
+    // Group candidatures by month using date-fns
+    const groupedByMonth = candidatures.reduce((acc, candidature) => {
+      const monthKey = format(new Date(candidature.createdAt), "yyyy-MM"); // Format as YYYY-MM
+      acc[monthKey] = (acc[monthKey] || 0) + 1; // Increment count for the month
+      return acc;
+    }, {});
+
+    // Convert the grouped data into an array format for the frontend
+    const formattedData = Object.keys(groupedByMonth).map((month) => ({
+      month,
+      count: groupedByMonth[month],
     }));
+
+    // Sort the data chronologically
+    formattedData.sort((a, b) => a.month.localeCompare(b.month));
+
+    res.json(formattedData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+})
+
+router.get('/candidatureBySujet', async(req, res) => {
+  try {
+    const result = await prisma.candidature.groupBy({
+      by: ["sujetId"],
+      _count: {
+        id: true,
+      },
+      orderBy: {
+        _count: {
+          id: "desc",
+        },
+      },
+    });
+
+    // Fetch sujet titles for better readability
+    const sujetIds = result.map((item) => item.sujetId);
+    const sujets = await prisma.sujet.findMany({
+      where: { id: { in: sujetIds } },
+      select: { id: true, titre: true },
+    });
+
+    // Map sujet titles to the result
+    const formattedData = result.map((item) => {
+      const sujet = sujets.find((s) => s.id === item.sujetId);
+      return {
+        sujet: sujet ? sujet.titre : "Unknown",
+        count: item._count.id,
+      };
+    });
 
     res.json(formattedData);
   } catch (error) {
