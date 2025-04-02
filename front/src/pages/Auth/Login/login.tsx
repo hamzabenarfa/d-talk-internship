@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 import { useState } from "react";
@@ -29,7 +29,9 @@ export default function LoginPage() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate(); // Correctly renamed to `navigate`
+  const location = useLocation(); // Access the current location
 
+  const from = location.state?.from || "/";
   const validateForm = async () => {
     try {
       await schema.validate({ email, password }, { abortEarly: false });
@@ -69,14 +71,13 @@ export default function LoginPage() {
             navigate("/admin/dashboard");
             break;
           case "CANDIDAT":
-          case "INTERN":
-            navigate("/etudiant");
+            navigate(from === "/" ? "/etudiant" : from, { replace: true });
             break;
           case "PROF_SUPERVISOR":
             navigate("/encadrant");
             break;
           default:
-            navigate("/");
+            navigate(from, { replace: true });
             break;
         }
       }

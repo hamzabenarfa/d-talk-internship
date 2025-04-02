@@ -36,14 +36,13 @@ async function main() {
   const users = [];
   for (let i = 1; i <= 15; i++) {
     const email = faker.internet.email(); // Generate a random email
-    const password = faker.internet.password(); // Generate a random password
     const nom = faker.person.lastName(); // Generate a random last name
     const prenom = faker.person.firstName(); // Generate a random first name
 
     const user = await prisma.user.create({
       data: {
         email,
-        password: await hashPassword(password), // Hashed password
+        password: await hashPassword(email), // Hashed password
         nom,
         prenom,
         telephone:22121222,

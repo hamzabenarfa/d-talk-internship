@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
-import { useNavigate, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import toast from "react-hot-toast"
 import { Building2, Clock, FileText, MapPin, Upload } from "lucide-react"
 import axiosInstance from "@/axios-instance"
@@ -26,10 +26,10 @@ interface Sujet {
 export default function Sujet() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const location = useLocation() // Capture the current location
   const role = useSelector((state) => state.auth.user?.user?.role)
 
   const [sujet, setSujet] = useState<Sujet | null>(null)
-  console.log("🚀 ~ Sujet ~ sujet:", sujet)
   const [cvFile, setCvFile] = useState<FileList | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -60,7 +60,8 @@ export default function Sujet() {
 
   const handleApplyClick = () => {
     if (role !== "CANDIDAT") {
-      toast.error("Please log in as a CANDIDAT to apply")
+      // Redirect to login page with the current location stored in state
+      navigate("/login", { state: { from: location.pathname } })
       return
     }
     setShowApplicationForm(true)
