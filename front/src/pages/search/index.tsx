@@ -107,8 +107,7 @@ export default function Job() {
                     location={sujet.location || "Not specified"}
                     type={sujet.work || "Full-time"}
                     category={sujet.category?.name || "Technology"} // Safely access category.name
-                    salary={sujet.salary || "N/A"}
-                    postedTime={sujet.postedTime || "RECENTLY"}
+              
                     backgroundColor={index % 4 === 0 ? "bg-pink-50/50" : "bg-gray-50"}
                     logo={sujet.logo}
                   />

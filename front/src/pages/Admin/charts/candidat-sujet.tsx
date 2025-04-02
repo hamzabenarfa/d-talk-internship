@@ -10,6 +10,8 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import axiosInstance from '../../../../axios-instance';
+
+// Register Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -19,6 +21,7 @@ ChartJS.register(
   Legend
 );
 
+// Chart options
 export const options = {
   responsive: true,
   plugins: {
@@ -49,7 +52,7 @@ export const options = {
         text: 'Sujet',
         color: '#666',
         font: {
-          size: 14,
+          size: 1,
           weight: 'bold',
         },
       },
@@ -57,6 +60,7 @@ export const options = {
   },
 };
 
+// Bar Chart Component
 export function BarChartCandidatSujet() {
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
 
@@ -64,13 +68,19 @@ export function BarChartCandidatSujet() {
     axiosInstance.get('/kpi/candidatureBySujet')
       .then(response => {
         const data = response.data;
-        const labels = Object.keys(data);
+
+        // Extract labels (subjects) and counts (number of applications)
+        const labels = data.map(item => item.sujet);
+        const counts = data.map(item => item.count);
+
+        // Define dataset for the chart
         const dataset = {
           label: 'Nombre de candidatures',
-          data: Object.values(data),
+          data: counts,
           backgroundColor: 'rgba(53, 162, 235, 0.5)',
         };
-        
+
+        // Update chart data state
         setChartData({
           labels: labels,
           datasets: [dataset],

@@ -1,4 +1,4 @@
-import { Bookmark, MapPin, Clock, Building2 } from "lucide-react"
+import {  MapPin, Clock, Building2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Link } from "react-router-dom"
@@ -9,8 +9,7 @@ interface JobCardProps {
   location: string
   type: string
   category: string
-  salary: string
-  postedTime: string
+
   backgroundColor?: string
   logo?: string
 }
@@ -22,7 +21,7 @@ export function JobCard({
   location,
   type,
   category,
-  postedTime,
+
   backgroundColor,
   logo,
 }: JobCardProps) {
@@ -39,9 +38,7 @@ export function JobCard({
           )}
           <span className="text-lg font-medium">{"Internship"}</span>
         </div>
-        <Button variant="ghost" size="icon" className="rounded-full">
-          <Bookmark className="h-5 w-5" />
-        </Button>
+   
       </div>
       <Separator className="my-4" />
       <h3 className="mb-4 text-xl font-semibold">{titre}</h3>
@@ -64,7 +61,7 @@ export function JobCard({
       <Link to={`/sujet/${id}`}>
         <Button className="w-full rounded-full bg-black text-white hover:bg-black/90">Details</Button>
       </Link>
-      <p className="mt-3 text-center text-sm text-gray-500">POSTED {postedTime}</p>
+
     </div>
   )
 }
