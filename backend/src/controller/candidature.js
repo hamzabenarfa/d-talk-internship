@@ -4,6 +4,7 @@ const prisma = new PrismaClient();
 const fs = require("fs");
 const path = require("path");
 const archiver = require("archiver");
+const { sendEmail } = require("../lib/mailer");
 
 const getCandidatureById = async (req, res) => {
   const { id } = req.params;
@@ -107,20 +108,41 @@ const acceptCandidature = async (req, res) => {
       where: {
         id: parseInt(id),
       },
+      include: {
+        user: {
+          select: {
+            nom: true,
+            email: true,
+          },
+        },
+      },
     });
+
     const candidatureAlreadyAccepted = await prisma.candidature.findFirst({
-      where:{
-        userId:candidature.userId,
-        status: "ACCEPTE" 
-      }
-    })
-    if(candidatureAlreadyAccepted){
+      where: {
+        userId: candidature.userId,
+        status: "ACCEPTE",
+      },
+    });
+    if (candidatureAlreadyAccepted) {
       return res.status(400).json({ error: "Candidature deja accepte" });
     }
     const updatedCandidature = await prisma.candidature.update({
       where: { id: parseInt(id) },
       data: { status: "ACCEPTE" },
+      include: {
+        sujet: {
+          select: {
+            titre: true,
+          },
+        },
+      },
     });
+    const email = candidature.user.email;
+    const name = candidature.user.nom;
+    const sujetName = updatedCandidature.sujet.titre;
+
+    await sendEmail(email, "stage affecté", name, sujetName);
     res.json(updatedCandidature);
   } catch (error) {
     res.status(500).json({ error: "Failed to accept candidature" });
@@ -271,7 +293,7 @@ const getMyAvancement = async (req, res) => {
     const candidature = await prisma.candidature.findFirst({
       where: {
         userId,
-        status:Status.ACCEPTE
+        status: Status.ACCEPTE,
       },
       include: {
         sujet: {
@@ -281,8 +303,8 @@ const getMyAvancement = async (req, res) => {
         },
       },
     });
-    if(!candidature){
-       return res.status(404).json({error:"Aucun Stage "})
+    if (!candidature) {
+      return res.status(404).json({ error: "Aucun Stage " });
     }
     res.json(candidature);
   } catch (error) {
@@ -349,63 +371,64 @@ const getValidationStage = async (req, res) => {
     // Fetch candidatures for the supervisor
     const candidatures = await prisma.candidature.findMany({
       where: {
-        supervisorId: supervisorId
+        supervisorId: supervisorId,
       },
       include: {
         sujet: {
           select: {
-            titre: true
-          }
+            titre: true,
+          },
         },
         user: {
           select: {
-            id: true,  // Fetch user ID to calculate percentage for each user
-            nom: true
-          }
-        }
-      }
+            id: true, // Fetch user ID to calculate percentage for each user
+            nom: true,
+          },
+        },
+      },
     });
 
     // Create an array to store results with percentage for each user
-    const resultsWithPercentage = await Promise.all(candidatures.map(async (candidature) => {
-      const userId = req.user.id;
-      // Fetch total tasks for the user
-      const totalTache = await prisma.task.count({
-        where: {
-          userId,
-          candidatureId:candidature.id
-        }
-      });
+    const resultsWithPercentage = await Promise.all(
+      candidatures.map(async (candidature) => {
+        const userId = req.user.id;
+        // Fetch total tasks for the user
+        const totalTache = await prisma.task.count({
+          where: {
+            userId,
+            candidatureId: candidature.id,
+          },
+        });
 
-      // Fetch total valid tasks for the user
-      const totalValide = await prisma.task.count({
-        where: {
-          userId,
-          valide: true,
-          
-          candidatureId:candidature.id
-        }
-      });
+        // Fetch total valid tasks for the user
+        const totalValide = await prisma.task.count({
+          where: {
+            userId,
+            valide: true,
 
-      // Calculate percentage of valid tasks
-      const pourcentageValide = totalTache > 0 ? (totalValide / totalTache) * 100 : 0;
+            candidatureId: candidature.id,
+          },
+        });
 
-      // Return candidature with percentage
-      return {
-        ...candidature,
-        pourcentageValide
-      };
-    }));
+        // Calculate percentage of valid tasks
+        const pourcentageValide =
+          totalTache > 0 ? (totalValide / totalTache) * 100 : 0;
+
+        // Return candidature with percentage
+        return {
+          ...candidature,
+          pourcentageValide,
+        };
+      })
+    );
 
     // Send the results with validation percentage for each user
     res.status(200).json(resultsWithPercentage);
-    
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to fetch candidatures" });
   }
 };
-
 
 module.exports = {
   getCandidatureById,
