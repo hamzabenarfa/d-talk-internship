@@ -1,86 +1,120 @@
-import { useEffect, useState } from "react";
-import { AiOutlineUser, AiOutlineLogout, AiFillFile } from "react-icons/ai";
-import { Link } from "react-router-dom"; // Correcting import for Link
-import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../../redux/actions/authActions";
-import { NavLink } from "react-router-dom";
-import { GiProgression } from "react-icons/gi";
-import axiosInstance from "../../../../axios-instance";
+
+import { useDispatch, useSelector } from "react-redux"
+import { Link, NavLink } from "react-router-dom"
+import { logout } from "../../../redux/actions/authActions"
+import {
+
+  LogOut,
+  ChevronRight,
+  List,
+  FileCheck,
+  GraduationCap,
+} from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Separator } from "@/components/ui/separator"
 
 const Sidebar = () => {
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user.user);
-  const [myAdvancement, setMyAdvancement] = useState({});
+  const dispatch = useDispatch()
+  const user = useSelector((state) => state.auth.user.user)
 
+  const navLinks = [
+    {
+   
+        path: "/search",
+        icon: <GraduationCap className="h-5 w-5" />,
+        label: "List des stages",
+  
+    },
+    {
+      path: "/etudiant/liste-candidature",
+      icon: <List className="h-5 w-5" />,
+      label: "liste de mes candidatures",
+    },
+    {
+      path: "/etudiant/avancement",
+      icon: <FileCheck className="h-5 w-5" />,
+      label: "Tache des stage",
+    },
+   
+  ]
 
   const handleLogout = () => {
-    dispatch(logout());
-  };
+    dispatch(logout())
+  }
+
+  // Get user initials for avatar
+  const getInitials = (name) => {
+    if (!name) return "U"
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+  }
 
   return (
-    <div className="hidden md:w-64 md:block  bg-gray-900 text-gray-200">
-      <div className="py-10 px-4  ">
-        <Link to="/">
-          <h1 className="text-3xl text-center font-bold bg-gradient-to-r from-green-500 to-blue-500 text-transparent bg-clip-text">
-            Home
-          </h1>
-        </Link>
-
-        <div className="flex items-center justify-center flex-col gap-4 p-8 ">
-          <img
-            src="/images/user.jpg"
-            alt="user"
-            className=" h-16 w-16 rounded-full"
-          />
-          <div className="flex items-center justify-center flex-col">
-            <span className="block text-2xl capitalize font-bold">
-              {user.nom}
-            </span>
-            <span className="block text-xs capitalize font-meduim">
-              {user.role}
-            </span>
+    <div className="w-64 h-screen bg-background border-r flex flex-col">
+      {/* Header with user info */}
+      <div className="p-4">
+        <div className="flex items-center space-x-3 py-4">
+          <Avatar className="h-10 w-10">
+            <AvatarFallback className="bg-primary text-primary-foreground">{getInitials(user.nom)}</AvatarFallback>
+          </Avatar>
+          <div className="space-y-1">
+            <p className="text-sm font-medium leading-none">{user.nom}</p>
+            <p className="text-xs text-muted-foreground">{user.email}</p>
           </div>
         </div>
+      </div>
 
-        <ul className="flex  flex-col justify-center  w-full mt-6">
-        
-          <li className="flex items-center gap-1  text-blue-500 hover:text-blue-700 cursor-pointer p-2 rounded-md">
-            <NavLink to="/etudiant" className=" text-sm font-medium">
-              liste des stages
-            </NavLink>
-          </li>
-          <li className="flex items-center gap-1  text-blue-500 hover:text-blue-700 cursor-pointer p-2 rounded-md">
-            <NavLink to="/etudiant/liste-candidature" className=" text-sm font-medium">
-              liste de mes candidatures
-            </NavLink>
-          </li>
+      <Separator />
 
-          
+      {/* Navigation Links */}
+      <nav className="flex-1 p-4">
+        <div className="space-y-1">
+          {navLinks.map((link, index) => (
             <NavLink
-              to="/etudiant/avancement"
-              className=" text-sm font-medium"
+              key={index}
+              to={link.path}
+              className={({ isActive }) =>
+                cn(
+                  "flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
+                  isActive
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                )
+              }
             >
-              <li className="flex  text-blue-500 hover:text-blue-700 cursor-pointer p-2 rounded-md">
-               <p>
-               Tache des stage
-                </p> 
-               
-              </li>
+              <div className="flex items-center gap-3">
+                {link.icon}
+                <span>{link.label}</span>
+              </div>
+              <ChevronRight className="h-4 w-4 opacity-50" />
             </NavLink>
-          
-        </ul>
+          ))}
+        </div>
+      </nav>
 
-        <Link
-          to="/"
+      {/* Footer with logout */}
+      <div className="p-4 mt-auto">
+        <Separator className="mb-4" />
+        <Button
+          variant="ghost"
+          className="w-full justify-start text-muted-foreground hover:text-destructive"
           onClick={handleLogout}
-          className="absolute bottom-5 flex items-center text-blue-500 hover:text-blue-700 cursor-pointer p-2 rounded-md"
+          asChild
         >
-          <AiOutlineLogout className="text-lg" />
-          <span className="ml-4 text-sm font-medium">Logout</span>
-        </Link>
+          <Link to="/">
+            <LogOut className="mr-2 h-4 w-4" />
+            Déconnexion
+          </Link>
+        </Button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Sidebar;
+export default Sidebar
+

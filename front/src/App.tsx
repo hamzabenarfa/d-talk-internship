@@ -15,8 +15,6 @@ import Sujet from "./pages/Sujet/sujet";
 import Candidat from "./pages/Admin/Components/candidat";
 import StagiairesAcceptes from "./pages/Admin/Components/stagaire";
 import Stage from "./pages/Encadrant/page/stage";
-import StagePage from "./pages/stage/stage";
-import ListeStage from "./pages/Etudiant/Components/liste-stage";
 import ListeCandidature from "./pages/Etudiant/Components/liste-candidature";
 import Main from "./pages/Encadrant/page/main"
 import ValidationStage from "./pages/Encadrant/page/ValidationStage";
@@ -61,9 +59,7 @@ function App() {
               path: "",
               element: <Etudiant />,
               children: [
-                { path: "", element: <EtudiantDashboard /> },
                 { path: "avancement", element: <Avancement /> },
-                { path: "sujet", element: <Avancement /> },
                 { path: "Liste-Candidature", element: <ListeCandidature/> }
               ],
             }
@@ -81,8 +77,7 @@ function App() {
 
           ],
         },
-        { path: "sujet/:id", element: <Sujet /> },
-        { path: "stage", element: <StagePage /> }
+        { path: "sujet/:id", element: <Sujet /> }
       ],
     },
   ]);

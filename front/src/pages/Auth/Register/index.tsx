@@ -1,6 +1,4 @@
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -35,7 +33,6 @@ const schema = yup.object().shape({
     .string()
     .min(8, "Mot de passe doit contenir au moins 8 caractères")
     .required("Mot de passe est requis"),
-  role: yup.string().required("Rôle est requis"),
   dateDeNaissance: yup
     .date()
     .required("Date de naissance est requise")
@@ -56,14 +53,14 @@ export default function SignUpPage() {
     email: "",
     telephone: "",
     password: "",
-    role: "",
+    role: "CANDIDAT",
     dateDeNaissance: "",
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
-  const router = useNavigate();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -103,24 +100,22 @@ export default function SignUpPage() {
       if (response.data) {
         dispatch(loginSuccess(response.data));
         toast.success("Inscription réussie");
-        switch (response.data.user.role) {
-          case "ADMIN":
-            router.push("/admin/dashboard");
-            break;
+        const { role } = response.data.user;
+        switch (role) {
           case "CANDIDAT":
-          case "INTERN":
-            router.push("/etudiant");
-            break;
-          case "PROF_SUPERVISOR":
-            router.push("/encadrant");
+            navigate("/etudiant");
             break;
           default:
-            router.push("/");
+            navigate("/");
             break;
         }
       }
     } catch (err) {
-      toast.error(err.response?.data || "Erreur lors de l'inscription");
+      if (err.response) {
+        toast.error(err.response.data || "Erreur lors de l'inscription");
+      } else {
+        toast.error("Une erreur réseau s'est produite.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -129,7 +124,7 @@ export default function SignUpPage() {
   return (
     <div>
       <Navbar />
-      <main className="min-h-screen  px-4 py-12">
+      <main className="min-h-screen px-4 py-12">
         <div className="mx-auto max-w-md space-y-8">
           <AuthHeader
             title="Create Account"
@@ -247,29 +242,7 @@ export default function SignUpPage() {
                 )}
               </div>
 
-              <div className="space-y-2">
-                <Select
-                  name="role"
-                  onValueChange={(value) =>
-                    handleChange({ target: { name: "role", value } })
-                  }
-                >
-                  <SelectTrigger
-                    className={`w-full ${errors.role ? "border-red-500" : ""}`}
-                  >
-                    <SelectValue placeholder="Sélectionner un rôle" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="CANDIDAT">CANDIDAT</SelectItem>
-                    <SelectItem value="PROF_SUPERVISOR">
-                      PROF_SUPERVISOR
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.role && (
-                  <div className="text-red-500 text-sm">{errors.role}</div>
-                )}
-              </div>
+              
 
               <Button
                 type="submit"

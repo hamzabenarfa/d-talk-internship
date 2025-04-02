@@ -48,7 +48,7 @@ model sujet {
   duration    String
   deadline    DateTime?
   work        WorkArrangement
-
+  location    String
   User       User? @relation(fields: [userId], references: [id])
   userId     Int?
   categoryId Int?

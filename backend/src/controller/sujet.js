@@ -7,6 +7,13 @@ const getSujetById = async (req, res) => {
   try {
     const sujet = await prisma.sujet.findUnique({
       where: { id: parseInt(id) },
+      include: {
+        category: {
+          select: {
+            name: true, 
+          },
+        },
+      },
     });
     if (sujet) {
       res.json(sujet);
@@ -24,7 +31,7 @@ const getSujet = async (req, res) => {
       include: {
         category: {
           select: {
-            name: true, // Only select the 'name' field from the Category model
+            name: true, 
           },
         },
       },
