@@ -7,8 +7,8 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const fetchData = async () => {
   const [validStagesRes, nonValidStagesRes] = await Promise.all([
-    axiosInstance.get('/valid-stages'),
-    axiosInstance.get('/non-valid-stages'),
+    axiosInstance.get('/kpi/valid-stages'),
+    axiosInstance.get('/kpi/non-valid-stages'),
   ]);
   const validStages = validStagesRes.data;
   const nonValidStages = nonValidStagesRes.data;

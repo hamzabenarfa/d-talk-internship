@@ -28,8 +28,7 @@ model User {
   updatedAt       DateTime @updatedAt
   role            Role     @default(CANDIDAT)
   dateDeNaissance DateTime
-
-  sujet       sujet[]
+  
   candidature candidature[]
   Resource    Resource[]
   Task        Task[]
@@ -49,8 +48,7 @@ model sujet {
   deadline    DateTime?
   work        WorkArrangement
   location    String
-  User       User? @relation(fields: [userId], references: [id])
-  userId     Int?
+
   categoryId Int?
 
   candidature candidature[]

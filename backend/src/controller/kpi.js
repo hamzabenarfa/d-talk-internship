@@ -1,134 +1,157 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
-
-router.get("/valid-stages", async (req, res, next) => {
+// Controller for /candidatures/monthly
+const getCandidaturesByMonth = async (req, res) => {
   try {
-    // Get all accepted candidatures
-    const acceptedCandidatures = await prisma.candidature.findMany({
-      where: {
-        status: "ACCEPTE",
+    const result = await prisma.$queryRaw`
+        SELECT 
+          DATE_TRUNC('month', "createdAt") AS month,
+          COUNT(*) AS count
+        FROM "candidature"
+        GROUP BY DATE_TRUNC('month', "createdAt")
+        ORDER BY month ASC
+      `;
+
+    // Format the result for the frontend
+    const formattedData = result.map((row) => ({
+      month: row.month.toISOString().slice(0, 7), // Extract YYYY-MM format
+      count: Number(row.count),
+    }));
+
+    res.json(formattedData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// Controller for /candidatureBySujet
+const getCandidaturesBySujet = async (req, res) => {
+  try {
+    const result = await prisma.candidature.groupBy({
+      by: ["sujetId"],
+      _count: {
+        id: true,
       },
-      include: {
-        Task: true,
+      orderBy: {
+        _count: {
+          id: "desc",
+        },
       },
     });
 
-    // Count candidatures where all tasks are validated
-    let validStagesCount = 0;
+    // Fetch sujet titles for better readability
+    const sujetIds = result.map((item) => item.sujetId);
+    const sujets = await prisma.sujet.findMany({
+      where: { id: { in: sujetIds } },
+      select: { id: true, titre: true },
+    });
 
-    for (const candidature of acceptedCandidatures) {
-      if (candidature.Task.length > 0) {
-        const allTasksValidated = candidature.Task.every((task) => task.valide);
-        if (allTasksValidated) {
-          validStagesCount++;
-        }
-      }
-    }
+    // Map sujet titles to the result
+    const formattedData = result.map((item) => {
+      const sujet = sujets.find((s) => s.id === item.sujetId);
+      return {
+        sujet: sujet ? sujet.titre : "Unknown",
+        count: item._count.id,
+      };
+    });
 
-    res.json(validStagesCount);
+    res.json(formattedData);
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
   }
-});
-
-// Get count of non-valid stages (candidatures with status ACCEPTE but not all tasks validated)
-router.get("/non-valid-stages", async (req, res, next) => {
+}; // Controller for /task/valide-nonvalide
+const getTaskValidationStatus = async (req, res) => {
   try {
-    // Get all accepted candidatures
-    const acceptedCandidatures = await prisma.candidature.findMany({
-      where: {
-        status: "ACCEPTE",
-      },
-      include: {
-        Task: true,
+    const result = await prisma.task.groupBy({
+      by: ["valide"],
+      _count: {
+        id: true,
       },
     });
 
-    // Count candidatures where not all tasks are validated
-    let nonValidStagesCount = 0;
+    // Format the result for the frontend
+    const formattedData = result.map((row) => ({
+      status: row.valide ? "Validé" : "Non validé",
+      count: Number(row._count.id),
+    }));
 
-    for (const candidature of acceptedCandidatures) {
-      if (candidature.Task.length > 0) {
-        const allTasksValidated = candidature.Task.every((task) => task.valide);
-        if (!allTasksValidated) {
-          nonValidStagesCount++;
-        }
-      } else {
-        // If there are no tasks, consider it as non-valid
-        nonValidStagesCount++;
-      }
-    }
-
-    res.json(nonValidStagesCount);
+    res.json(formattedData);
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
   }
-});
-router.get("/countByCategorie", async (req, res, next) => {
-    try {
-      // Get all categories
-      const categories = await prisma.category.findMany({
-        include: {
-          _count: {
-            select: { sujets: true },
-          },
+}; 
+// Controller for /sujet/countByCategorie
+const getSujetsByCategory = async (req, res) => {
+  try {
+    const result = await prisma.sujet.groupBy({
+      by: ["categoryId"],
+      _count: {
+        id: true,
+      },
+      orderBy: {
+        _count: {
+          id: "desc",
         },
-      })
-  
-      // Format the data for the chart
-      const result = {}
-      categories.forEach((category) => {
-        result[category.name] = category._count.sujets
-      })
-  
-      res.json(result)
-    } catch (error) {
-      next(error)
-    }
-  })
+      },
+    });
 
-  router.get("/byCandidature/:candidatureId", async (req, res, next) => {
-    try {
-      const { candidatureId } = req.params
-  
-      const tasks = await prisma.task.findMany({
-        where: {
-          candidatureId: Number(candidatureId),
-        },
-        include: {
-          User: true,
-          Commentaire: true,
-        },
-      })
-  
-      res.json(tasks)
-    } catch (error) {
-      next(error)
-    }
-  })
-  
-  // Get count of validated and non-validated tasks
-  router.get("/valide-nonvalide", async (req, res, next) => {
-    try {
-      const valideCount = await prisma.task.count({
-        where: {
-          valide: true,
-        },
-      })
-  
-      const nonValideCount = await prisma.task.count({
-        where: {
-          valide: false,
-        },
-      })
-  
-      res.json({
-        valideCount,
-        nonValideCount,
-      })
-    } catch (error) {
-      next(error)
-    }
-  })
-  
-export default router;
+    // Fetch category names for better readability
+    const categoryIds = result.map((item) => item.categoryId);
+    const categories = await prisma.category.findMany({
+      where: { id: { in: categoryIds } },
+      select: { id: true, name: true },
+    });
+
+    // Map category names to the result
+    const formattedData = result.map((item) => {
+      const category = categories.find((c) => c.id === item.categoryId);
+      return {
+        category: category ? category.name : "Uncategorized",
+        count: item._count.id,
+      };
+    });
+
+    res.json(formattedData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}; // Controller for /non-valid-stages
+const getNonValidStages = async (req, res) => {
+  try {
+    const result = await prisma.candidature.count({
+      where: {
+        status: "REFUSE", // Assuming "REFUSE" means non-validated
+      },
+    });
+
+    res.json({ count: result });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}; // Controller for /valid-stages
+const getValidStages = async (req, res) => {
+  try {
+    const result = await prisma.candidature.count({
+      where: {
+        status: "ACCEPTE", // Assuming "ACCEPTE" means validated
+      },
+    });
+
+    res.json({ count: result });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+module.exports = {
+    getCandidaturesByMonth,
+    getCandidaturesBySujet,
+    getTaskValidationStatus,
+    getSujetsByCategory,
+    getNonValidStages,
+    getValidStages,
+};

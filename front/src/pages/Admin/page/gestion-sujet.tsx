@@ -271,7 +271,7 @@ export default function GestionSujet() {
                         <TableCell>
                           <Badge variant="outline">{getCategoryName(sujet)}</Badge>
                         </TableCell>
-                        <TableCell>{sujet.duration} jours</TableCell>
+                        <TableCell>{sujet.duration}</TableCell>
                         <TableCell>{formatDate(sujet.deadline)}</TableCell>
                         <TableCell>
                           <Badge variant={getWorkBadgeVariant(sujet.work)}>{getWorkLabel(sujet.work)}</Badge>

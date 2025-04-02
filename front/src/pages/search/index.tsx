@@ -13,13 +13,11 @@ export default function Job() {
   const [selectedCategory, setSelectedCategory] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  // Fetch all categories and sujets on component mount
   useEffect(() => {
     fetchCategories()
     fetchAllSujets()
   }, [])
 
-  // Fetch sujets when category changes (except on initial load)
   useEffect(() => {
     if (selectedCategory) {
       fetchSujetsByCategory(selectedCategory)
@@ -29,7 +27,6 @@ export default function Job() {
   const fetchCategories = async () => {
     setIsLoading(true)
     try {
-      // Using the exact endpoint from your description: "/categories"
       const response = await axiosInstance.get("/category")
       setCategories(response.data)
     } catch (error) {
@@ -42,9 +39,12 @@ export default function Job() {
   const fetchAllSujets = async () => {
     setIsLoading(true)
     try {
-      // Using the exact endpoint from your description: "/"
       const response = await axiosInstance.get("/sujet")
-      setSujets(response.data)
+      const sujetsWithCategories = response.data.map(sujet => ({
+        ...sujet,
+        category: sujet.category || { name: "Unknown" } // Ensure category exists
+      }))
+      setSujets(sujetsWithCategories)
     } catch (error) {
       console.error("Error fetching all sujets:", error)
     } finally {
@@ -55,9 +55,12 @@ export default function Job() {
   const fetchSujetsByCategory = async (categoryId) => {
     setIsLoading(true)
     try {
-      // Using the exact endpoint from your description: "/category/:categoryId"
       const response = await axiosInstance.get(`/sujet/category/${categoryId}`)
-      setSujets(response.data)
+      const sujetsWithCategories = response.data.map(sujet => ({
+        ...sujet,
+        category: sujet.category || { name: "Unknown" } // Ensure category exists
+      }))
+      setSujets(sujetsWithCategories)
     } catch (error) {
       console.error(`Error fetching sujets for category ${categoryId}:`, error)
     } finally {
@@ -67,7 +70,6 @@ export default function Job() {
 
   const handleCategoryChange = (categoryId) => {
     if (categoryId === null) {
-      // If "All" is selected, fetch all sujets
       setSelectedCategory(null)
       fetchAllSujets()
     } else {
@@ -104,7 +106,7 @@ export default function Job() {
                     titre={sujet.titre || "Position"}
                     location={sujet.location || "Not specified"}
                     type={sujet.work || "Full-time"}
-                    category={sujet.category.name || "Technology"}
+                    category={sujet.category?.name || "Technology"} // Safely access category.name
                     salary={sujet.salary || "N/A"}
                     postedTime={sujet.postedTime || "RECENTLY"}
                     backgroundColor={index % 4 === 0 ? "bg-pink-50/50" : "bg-gray-50"}
@@ -123,4 +125,3 @@ export default function Job() {
     </div>
   )
 }
-

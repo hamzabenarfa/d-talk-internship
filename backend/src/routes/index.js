@@ -18,7 +18,7 @@ router.use("/candidature",  authenticateToken, candidatureRouter);
 router.use('/task', authenticateToken, taskRouter);
 router.use('/commentaire',authenticateToken, commentaireRouter);
 router.use('/category', categoryRouter );
-router.use('/', authenticateToken, kpiRouter);
+router.use('/kpi', authenticateToken, kpiRouter);
 
 
 module.exports = router;

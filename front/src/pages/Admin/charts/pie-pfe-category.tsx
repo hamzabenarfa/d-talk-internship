@@ -74,7 +74,7 @@ export function PfeCategoriesPieChart() {
   });
 
   useEffect(() => {
-    axiosInstance.get('sujet/countByCategorie')
+    axiosInstance.get('kpi/countByCategorie')
       .then(response => {
         const categories = Object.keys(response.data);
         const values = Object.values(response.data);

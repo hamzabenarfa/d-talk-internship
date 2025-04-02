@@ -61,7 +61,7 @@ export function BarChartCandidatSujet() {
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
 
   useEffect(() => {
-    axiosInstance.get('/candidatureBySujet')
+    axiosInstance.get('/kpi/candidatureBySujet')
       .then(response => {
         const data = response.data;
         const labels = Object.keys(data);

@@ -147,7 +147,7 @@ export default function Sujet() {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Duration</p>
-                <p className="font-medium">{sujet.duration || "Not specified"} jours</p>
+                <p className="font-medium">{sujet.duration || "Not specified"}</p>
               </div>
             </div>
             <div className="flex items-center gap-3">

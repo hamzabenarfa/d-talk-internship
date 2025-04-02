@@ -27,6 +27,7 @@ const SujetFormModal = ({ sujet, closeModal, setSujets, editMode, token, categor
     duration: 0,
     deadline: sujet?.deadline ? new Date(sujet.deadline).toISOString().split("T")[0] : "",
     work: "ONSITE",
+    location: "", // New field for location
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -40,6 +41,7 @@ const SujetFormModal = ({ sujet, closeModal, setSujets, editMode, token, categor
         duration: sujet.duration || 0,
         deadline: sujet.deadline ? new Date(sujet.deadline).toISOString().split("T")[0] : "",
         work: sujet.work || "ONSITE",
+        location: sujet.location || "", // Initialize location from sujet
       })
     }
   }, [editMode, sujet])
@@ -53,7 +55,7 @@ const SujetFormModal = ({ sujet, closeModal, setSujets, editMode, token, categor
   const handleCategoryChange = (value) => {
     setFormData((prev) => ({
       ...prev,
-      categoryId: Number.parseInt(value)
+      categoryId: Number.parseInt(value),
     }))
   }
 
@@ -122,6 +124,18 @@ const SujetFormModal = ({ sujet, closeModal, setSujets, editMode, token, categor
               placeholder="Description du sujet"
               required
               rows={4}
+            />
+          </div>
+
+          {/* Location Input Field */}
+          <div className="space-y-2">
+            <Label htmlFor="location">Lieu</Label>
+            <Input
+              id="location"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              placeholder="Entrez le lieu"
             />
           </div>
 
@@ -202,4 +216,3 @@ const SujetFormModal = ({ sujet, closeModal, setSujets, editMode, token, categor
 }
 
 export default SujetFormModal
-

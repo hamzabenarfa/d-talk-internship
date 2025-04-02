@@ -8,7 +8,7 @@ CREATE TABLE `User` (
     `telephone` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
-    `role` ENUM('CANDIDAT', 'ADMIN', 'RESPONSABLE', 'PROF_SUPERVISOR') NOT NULL DEFAULT 'CANDIDAT',
+    `role` ENUM('CANDIDAT', 'RESPONSABLE', 'PROF_SUPERVISOR') NOT NULL DEFAULT 'CANDIDAT',
     `dateDeNaissance` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `User_email_key`(`email`),
@@ -20,8 +20,19 @@ CREATE TABLE `sujet` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `titre` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NOT NULL,
-    `category` VARCHAR(191) NOT NULL,
-    `userId` INTEGER NULL,
+    `duration` VARCHAR(191) NOT NULL,
+    `deadline` DATETIME(3) NULL,
+    `work` ENUM('ONSITE', 'REMOTE', 'HYBRID') NOT NULL,
+    `location` VARCHAR(191) NOT NULL,
+    `categoryId` INTEGER NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `category` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -84,7 +95,7 @@ CREATE TABLE `Resource` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `sujet` ADD CONSTRAINT `sujet_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `sujet` ADD CONSTRAINT `sujet_categoryId_fkey` FOREIGN KEY (`categoryId`) REFERENCES `category`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `candidature` ADD CONSTRAINT `candidature_sujetId_fkey` FOREIGN KEY (`sujetId`) REFERENCES `sujet`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

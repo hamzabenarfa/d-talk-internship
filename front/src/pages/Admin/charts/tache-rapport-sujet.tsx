@@ -64,7 +64,7 @@ export function TacheRapportSujet() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosInstance.get('/sujet/countByCategorie');
+        const response = await axiosInstance.get('/kpi/countByCategorie');
         const data = response.data;
         const labels = Object.keys(data);
         const dataset = {

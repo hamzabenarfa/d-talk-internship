@@ -60,7 +60,7 @@ const createSujet = async (req, res) => {
   const rawDeadline = req.body.deadline
   const formattedDeadline = formatISO(new Date(rawDeadline), { representation: "complete" });
   const sujets = req.body;
-  const userId = req.user.id;
+
   const role = req.user.role;
   try {
     if (role !== "RESPONSABLE") {
@@ -74,7 +74,7 @@ const createSujet = async (req, res) => {
         ...sujets,
         categoryId:+sujets.categoryId,
         deadline:formattedDeadline,
-        userId,
+
       },
     });
     res.status(201).json(sujet);

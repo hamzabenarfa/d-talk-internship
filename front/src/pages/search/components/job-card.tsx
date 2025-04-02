@@ -22,7 +22,6 @@ export function JobCard({
   location,
   type,
   category,
-  salary,
   postedTime,
   backgroundColor,
   logo,
@@ -60,9 +59,7 @@ export function JobCard({
           <span className="text-sm text-gray-600">{category}</span>
         </div>
         
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-600">{salary ? `$${salary}/monthly` : "Salary not specified"}</span>
-        </div>
+    
       </div>
       <Link to={`/sujet/${id}`}>
         <Button className="w-full rounded-full bg-black text-white hover:bg-black/90">Details</Button>

@@ -9,7 +9,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import axiosInstance from '../../../../axios-instance';
+import axiosInstance from '@/axios-instance';
 
 ChartJS.register(
   CategoryScale,
@@ -73,7 +73,8 @@ export const BarChart: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosInstance.get('candidatures/monthly');
+        const response = await axiosInstance.get('kpi/candidatures/monthly');
+        console.log("🚀 ~ fetchData ~ response:", response.data)
         const rawData = response.data;
         const labels = Object.keys(rawData);
         const values = Object.values(rawData);

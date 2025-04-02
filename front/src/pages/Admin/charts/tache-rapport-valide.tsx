@@ -77,7 +77,7 @@ export const TacheRapport: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosInstance.get('task/valide-nonvalide');
+        const response = await axiosInstance.get('kpi/valide-nonvalide');
         const rawData = response.data;
         setData({
           labels: ['Non Validées', 'Validées'],
