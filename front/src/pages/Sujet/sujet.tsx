@@ -1,4 +1,3 @@
-"use client"
 
 import type React from "react"
 
@@ -184,56 +183,56 @@ export default function Sujet() {
           </div>
         )}
 
-        {showApplicationForm && role === "CANDIDAT" && (
-          <Card className="p-6 shadow-lg">
-            <h3 className="text-2xl font-semibold mb-4">Submit Your Application</h3>
-            <Separator className="mb-6" />
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <label htmlFor="cvFile" className="block text-sm font-medium text-gray-700">
-                  Upload Documents (CV, Cover Letter, etc.)
-                </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-500 transition-colors">
-                  <Upload className="h-8 w-8 mx-auto text-gray-400 mb-2" />
-                  <p className="text-sm text-gray-500 mb-2">Drag and drop files here or click to browse</p>
-                  <input
-                    type="file"
-                    id="cvFile"
-                    name="cvFile"
-                    multiple
-                    className="w-full opacity-0 absolute inset-0 cursor-pointer"
-                    onChange={handleCvFileChange}
-                    required
-                  />
-                  {cvFile && (
-                    <div className="mt-2 text-sm text-gray-600">
-                      {Array.from(cvFile).map((file, index) => (
-                        <p key={index}>{file.name}</p>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
+{showApplicationForm && role === "CANDIDAT" && (
+  <Card className="p-6 shadow-lg">
+    <h3 className="text-2xl font-semibold mb-4">Submit Your Application</h3>
+    <Separator className="mb-6" />
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="space-y-2">
+        <label htmlFor="cvFile" className="block text-sm font-medium text-gray-700">
+          Upload Documents (CV, Cover Letter, etc.)
+        </label>
+        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center relative hover:border-blue-500 transition-colors">
+          <Upload className="h-8 w-8 mx-auto text-gray-400 mb-2" />
+          <p className="text-sm text-gray-500 mb-2">Drag and drop files here or click to browse</p>
+          <input
+            type="file"
+            id="cvFile"
+            name="cvFile"
+            multiple
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            onChange={handleCvFileChange}
+            required
+          />
+          {cvFile && (
+            <div className="mt-2 text-sm text-gray-600">
+              {Array.from(cvFile).map((file, index) => (
+                <p key={index}>{file.name}</p>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
 
-              <div className="flex justify-center">
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded-full"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="animate-spin mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
-                      Submitting...
-                    </>
-                  ) : (
-                    "Submit Application"
-                  )}
-                </Button>
-              </div>
-            </form>
-          </Card>
-        )}
+      <div className="flex justify-center">
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded-full"
+        >
+          {isSubmitting ? (
+            <>
+              <div className="animate-spin mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
+              Submitting...
+            </>
+          ) : (
+            "Submit Application"
+          )}
+        </Button>
+      </div>
+    </form>
+  </Card>
+)}
 
         {role !== "CANDIDAT" && (
           <Card className="p-6 shadow-lg text-center">
