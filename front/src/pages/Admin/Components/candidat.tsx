@@ -80,24 +80,14 @@ const Candidat = () => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-800 text-white">
             <tr>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-              >
-                Nom
-              </th>
+     
               <th
                 scope="col"
                 className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               >
                 Email
               </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-              >
-                Téléphone
-              </th>
+        
               <th
                 scope="col"
                 className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
@@ -128,15 +118,11 @@ const Candidat = () => {
           <tbody className="bg-white divide-y divide-gray-200">
             {candidates && candidates.map((candidate) => (
               <tr key={candidate.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {candidate.user?.nom || ''}
-                </td>
+         
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {candidate.user?.email || ''}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {candidate.user?.telephone || ''}
-                </td>
+           
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {candidate.sujet?.titre || ''}
                 </td>
