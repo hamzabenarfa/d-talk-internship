@@ -6,6 +6,13 @@ const getCommentaires = async (req, res) => {
   const { id } = req.params;
   try {
     const commentaires = await prisma.commentaire.findMany({
+      include: {
+        User: {
+          select: {
+            nom: true,
+          },
+        },
+      },
       where: { tacheID: parseInt(id) },
     });
     res.json(commentaires);
@@ -26,10 +33,17 @@ const createCommentaire = async (req, res) => {
 
     const commentaire = await prisma.commentaire.create({
       data: {
-        tacheID: parseInt(id), 
+        tacheID: parseInt(id),
         content,
         date: commentaireDate,
         auteurID,
+      },
+      include: {
+        User: {
+          select: {
+            nom: true,
+          },
+        },
       },
     });
 
@@ -74,6 +88,13 @@ const updateCommentaire = async (req, res) => {
     const commentaire = await prisma.commentaire.update({
       where: { id: parseInt(id) },
       data: { content },
+      include: {
+        User: {
+          select: {
+            nom: true,
+          },
+        },
+      },
     });
     WebSocketServerInstance.broadcast(
       JSON.stringify({
@@ -92,6 +113,13 @@ const getAllCommentaires = async (req, res) => {
   try {
     const commentaires = await prisma.commentaire.findMany({
       where: { tacheID: parseInt(id) },
+      include: {
+        User: {
+          select: {
+            nom: true,
+          },
+        },
+      },
     });
     res.json(commentaires);
   } catch (error) {

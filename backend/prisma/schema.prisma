@@ -28,10 +28,11 @@ model User {
   updatedAt       DateTime @updatedAt
   role            Role     @default(CANDIDAT)
   dateDeNaissance DateTime
-  
+
   candidature candidature[]
   Resource    Resource[]
   Task        Task[]
+  comment     Commentaire[]
 }
 
 enum WorkArrangement {
@@ -43,7 +44,7 @@ enum WorkArrangement {
 model sujet {
   id          Int             @id @default(autoincrement())
   titre       String
-  description String @db.Text
+  description String          @db.Text
   duration    String
   deadline    DateTime?
   work        WorkArrangement
@@ -108,9 +109,10 @@ model Commentaire {
   id       Int      @id @default(autoincrement())
   date     DateTime
   content  String
-  auteurID Int?
   Task     Task?    @relation(fields: [tacheID], references: [id])
   tacheID  Int?
+  User     User?    @relation(fields: [auteurID], references: [id])
+  auteurID   Int?
 }
 
 enum ResourceType {
