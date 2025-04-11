@@ -1,98 +1,136 @@
 import React, { useState, useEffect } from "react";
-import { AiOutlineLogout } from "react-icons/ai";
-import { Link, NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../../redux/actions/authActions";
-import { GiProgression } from "react-icons/gi";
+import { NavLink, Link } from "react-router-dom";
 import axiosInstance from "../../../../axios-instance";
+import { logout } from "../../../redux/actions/authActions";
+
+// UI Components
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
+
+// Types (optional: if using TypeScript)
+interface Advancement {
+  id: number;
+  sujet: {
+    titre: string;
+  };
+}
+
+interface User {
+  nom: string;
+  email: string;
+}
+
 const Sidebar = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user.user);
-  const [myAdvancement, setMyAdvancement] = useState({});
+  const user = useSelector((state: any) => state.auth.user?.user);
+  const [myAdvancement, setMyAdvancement] = useState<Advancement[]>([]);
 
+  // Fetch advancement data on component mount
   useEffect(() => {
     getMyAdvancement();
   }, []);
-  
-  async function getMyAdvancement() {
+
+  const getMyAdvancement = async () => {
     try {
-      const res = await axiosInstance.get("candidature/avancement/supervisor");
-      console.log(res.data)
-      setMyAdvancement(res.data);
-    } catch (err) {
-      console.log(err);
+      const response = await axiosInstance.get("candidature/avancement/supervisor");
+      setMyAdvancement(response.data);
+    } catch (error) {
+      console.error("Error fetching advancement data:", error);
     }
-  }
+  };
+
+  // Handle logout action
   const handleLogout = () => {
     dispatch(logout());
   };
 
-  return (
-    <div className="hidden md:flex md:flex-col md:w-64 bg-gray-900 text-gray-200 overflow-hidden">
-      <div className="flex flex-col h-full justify-between p-4">
-        <div>
-          <h1 className="text-3xl text-center font-bold bg-gradient-to-r from-green-500 to-blue-500 text-transparent bg-clip-text p-4">
-            Home
-          </h1>
-          <div className="flex items-center justify-center flex-col gap-4 p-8">
-            <Link to="profil">
-              <img
-                src="/images/user.jpg"
-                alt="user"
-                className="h-16 w-16 rounded-full"
-              />
-            </Link>
-            <div className="text-center">
-              <span className="block text-2xl capitalize font-bold">
-                {user.nom}
-              </span>
-              <span className="block text-xs capitalize font-medium">
-                Encadrant
-              </span>
-            </div>
-          </div>
+  // Helper function to extract initials from a name
+  const getInitials = (name?: string): string => {
+    if (!name) return "U";
+    return name
+      .split(" ")
+      .map((part) => part[0])
+      .join("")
+      .toUpperCase();
+  };
 
-          {myAdvancement.length > 0 && (
-            <ul>
-              <p className="flex items-center font-bold text-blue-500  p-2 rounded-md">
-                Stage affectes :
-              </p>
+  return (
+    <div className="w-64 h-screen bg-background border-r flex flex-col">
+      {/* Header with user info */}
+      <header className="p-4 border-b">
+        <div className="flex items-center space-x-3">
+          <Avatar className="h-10 w-10">
+            <AvatarFallback className="bg-primary text-primary-foreground">
+              {getInitials(user?.nom)}
+            </AvatarFallback>
+          </Avatar>
+          <div className="space-y-1">
+            <p className="text-sm font-medium leading-none">{user?.nom}</p>
+            <p className="text-xs text-muted-foreground">{user?.email}</p>
+          </div>
+        </div>
+      </header>
+
+      {/* Navigation Links */}
+      <nav className="flex-1 overflow-y-auto p-4">
+        {myAdvancement.length > 0 && (
+          <>
+            <p className=" py-2 font-bold text-xl capitalize ">Les stage affectés :</p>
+            <ul className="space-y-1">
               {myAdvancement.map((advancement) => (
-                <NavLink
-                  key={advancement.id}
-                  to={`/encadrant/stage/${advancement.id}`}
-                  className="ml-4 "
-                >
-                  <li className="flex items-center  ml-4 text-blue-500 hover:text-blue-700 cursor-pointer">
+                <li key={advancement.id}>
+                  <NavLink
+                    to={`/encadrant/stage/${advancement.id}`}
+                  className={({ isActive }) =>
+                                  cn(
+                                    "flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
+                                    isActive
+                                      ? "bg-primary text-primary-foreground"
+                                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                                  )
+                                }
+                  >
                     {advancement.sujet.titre}
-                  </li>
-                </NavLink>
+                  </NavLink>
+                </li>
               ))}
             </ul>
-          )}
+          </>
+        )}
 
-          <ul>
-          <NavLink
-                  to={`/encadrant/validation-stage`}
-                  className=""
-                  >
-                  <li className="flex items-center  mt-6 ml-2 font-bold text-blue-500 hover:text-blue-700 cursor-pointer">
-                    Validation Stage
-                  </li>
-                </NavLink>
-          </ul>
-                  </div>
-        <div>
-          <Link
-            to="/"
-            onClick={handleLogout}
-            className="flex items-center justify-start text-blue-500 hover:text-blue-700 cursor-pointer p-2 rounded-md w-full"
-          >
-            <AiOutlineLogout className="text-lg" />
-            <span className="ml-4 text-sm font-medium">Logout</span>
-          </Link>
-        </div>
-      </div>
+<Separator className="my-4" />
+
+        <NavLink
+          to="/encadrant/validation-stage"
+         className={({ isActive }) =>
+                         cn(
+                           "flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
+                           isActive
+                             ? "bg-primary text-primary-foreground"
+                             : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                         )
+                       }
+        >
+          Validation Stage
+        </NavLink>
+      </nav>
+
+      {/* Footer with logout button */}
+      <footer className="p-4 border-t">
+        <Button
+          variant="ghost"
+          className="w-full justify-start text-muted-foreground hover:text-destructive"
+          onClick={handleLogout}
+          aria-label="Déconnexion"
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          Déconnexion
+        </Button>
+      </footer>
     </div>
   );
 };

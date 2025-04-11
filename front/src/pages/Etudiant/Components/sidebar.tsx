@@ -1,31 +1,27 @@
-
-import { useDispatch, useSelector } from "react-redux"
-import { Link, NavLink } from "react-router-dom"
-import { logout } from "../../../redux/actions/authActions"
+import { useDispatch, useSelector } from "react-redux";
+import { Link, NavLink } from "react-router-dom";
+import { logout } from "../../../redux/actions/authActions";
 import {
-
   LogOut,
   ChevronRight,
   List,
   FileCheck,
   GraduationCap,
-} from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Separator } from "@/components/ui/separator"
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
 
 const Sidebar = () => {
-  const dispatch = useDispatch()
-  const user = useSelector((state) => state.auth.user.user)
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user.user);
 
   const navLinks = [
     {
-   
-        path: "/search",
-        icon: <GraduationCap className="h-5 w-5" />,
-        label: "List des stages",
-  
+      path: "/search",
+      icon: <GraduationCap className="h-5 w-5" />,
+      label: "List des stages",
     },
     {
       path: "/etudiant/liste-candidature",
@@ -37,22 +33,21 @@ const Sidebar = () => {
       icon: <FileCheck className="h-5 w-5" />,
       label: "Tache des stage",
     },
-   
-  ]
+  ];
 
   const handleLogout = () => {
-    dispatch(logout())
-  }
+    dispatch(logout());
+  };
 
   // Get user initials for avatar
   const getInitials = (name) => {
-    if (!name) return "U"
+    if (!name) return "U";
     return name
       .split(" ")
       .map((n) => n[0])
       .join("")
-      .toUpperCase()
-  }
+      .toUpperCase();
+  };
 
   return (
     <div className="w-64 h-screen bg-background border-r flex flex-col">
@@ -60,7 +55,9 @@ const Sidebar = () => {
       <div className="p-4">
         <div className="flex items-center space-x-3 py-4">
           <Avatar className="h-10 w-10">
-            <AvatarFallback className="bg-primary text-primary-foreground">{getInitials(user.nom)}</AvatarFallback>
+            <AvatarFallback className="bg-primary text-primary-foreground">
+              {getInitials(user.nom)}
+            </AvatarFallback>
           </Avatar>
           <div className="space-y-1">
             <p className="text-sm font-medium leading-none">{user.nom}</p>
@@ -83,7 +80,7 @@ const Sidebar = () => {
                   "flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
                   isActive
                     ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 )
               }
             >
@@ -113,8 +110,7 @@ const Sidebar = () => {
         </Button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Sidebar
-
+export default Sidebar;
