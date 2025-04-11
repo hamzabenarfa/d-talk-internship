@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import axiosInstance from "../../../../axios-instance";
 import { logout } from "../../../redux/actions/authActions";
 
@@ -36,7 +36,9 @@ const Sidebar = () => {
 
   const getMyAdvancement = async () => {
     try {
-      const response = await axiosInstance.get("candidature/avancement/supervisor");
+      const response = await axiosInstance.get(
+        "candidature/avancement/supervisor"
+      );
       setMyAdvancement(response.data);
     } catch (error) {
       console.error("Error fetching advancement data:", error);
@@ -79,20 +81,22 @@ const Sidebar = () => {
       <nav className="flex-1 overflow-y-auto p-4">
         {myAdvancement.length > 0 && (
           <>
-            <p className=" py-2 font-bold text-xl capitalize ">Les stage affectés :</p>
+            <p className=" py-2 font-bold text-xl capitalize ">
+              Les stage affectés :
+            </p>
             <ul className="space-y-1">
               {myAdvancement.map((advancement) => (
                 <li key={advancement.id}>
                   <NavLink
                     to={`/encadrant/stage/${advancement.id}`}
-                  className={({ isActive }) =>
-                                  cn(
-                                    "flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
-                                    isActive
-                                      ? "bg-primary text-primary-foreground"
-                                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                                  )
-                                }
+                    className={({ isActive }) =>
+                      cn(
+                        "flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
+                        isActive
+                          ? "bg-primary text-primary-foreground"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      )
+                    }
                   >
                     {advancement.sujet.titre}
                   </NavLink>
@@ -102,18 +106,18 @@ const Sidebar = () => {
           </>
         )}
 
-<Separator className="my-4" />
+        <Separator className="my-4" />
 
         <NavLink
           to="/encadrant/validation-stage"
-         className={({ isActive }) =>
-                         cn(
-                           "flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
-                           isActive
-                             ? "bg-primary text-primary-foreground"
-                             : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                         )
-                       }
+          className={({ isActive }) =>
+            cn(
+              "flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
+              isActive
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            )
+          }
         >
           Validation Stage
         </NavLink>

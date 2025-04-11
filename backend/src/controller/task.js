@@ -1,4 +1,5 @@
 const { PrismaClient, Status } = require("@prisma/client");
+const { WebSocketServerInstance } = require("../lib/websocket");
 const prisma = new PrismaClient();
 
 const getMyTasks = async (req, res) => {
@@ -57,9 +58,15 @@ const createTask = async (req, res) => {
         candidatureId:parseInt(candidatureId),
       },
     });
+    WebSocketServerInstance.broadcast(
+      JSON.stringify({
+        event: "new-task",
+        data: task,
+      })
+    );
+
     res.json(task);
   } catch (error) {
-    console.log("🚀 ~ createTask ~ error:", error)
     res.status(500).json({ error: "Failed to create task" });
   }
 };

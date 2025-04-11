@@ -11,6 +11,8 @@ const taskRouter = require("./task");
 const commentaireRouter = require('./commentaire')
 const kpiRouter = require('./kpi');
 const categoryRouter = require('./category')
+
+
 router.use("/auth",authRouter);
 router.use("/user",  authenticateToken, userRouter);
 router.use("/sujet",   sujetRouter);

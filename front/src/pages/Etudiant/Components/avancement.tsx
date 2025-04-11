@@ -30,6 +30,33 @@ const Avancement = () => {
     }
   }
 
+
+  useEffect(() => {
+    const socket = new WebSocket("ws://localhost:8081");
+
+    // Listen for messages from the server
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+
+      if (message.event === "new-task") {
+        // Add the new task to the state
+        setTache((prevTasks) => [...prevTasks, message.data]);
+      } else if (message.event === "new-comment") {
+        // Update comments for the specific task
+        const { taskId, comment } = message.data;
+        setComments((prevComments) => ({
+          ...prevComments,
+          [taskId]: [...(prevComments[taskId] || []), comment],
+        }));
+      }
+    };
+
+    // Close the WebSocket connection on component unmount
+    return () => {
+      socket.close();
+    };
+  }, []);
+  
   useEffect(() => {
     getMyAdvancement();
 
