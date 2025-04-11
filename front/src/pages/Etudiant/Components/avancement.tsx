@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import {FaCheckCircle } from "react-icons/fa";
+import { FaCheckCircle } from "react-icons/fa";
 import axiosInstance from "../../../../axios-instance";
 import Toast from "react-hot-toast";
 import TaskCard from "@/pages/Encadrant/page/stage/components/task-card";
@@ -35,7 +35,6 @@ const Avancement = () => {
     }
   }
 
-
   useEffect(() => {
     const socket = new WebSocket("ws://localhost:8081");
 
@@ -53,32 +52,30 @@ const Avancement = () => {
           ...prevComments,
           [taskId]: [...(prevComments[taskId] || []), comment],
         }));
+      } else if (message.event === "delete-comment") {
+        const { id } = message.data;
+        setComments((prev) =>
+          Object.fromEntries(
+            Object.entries(prev).map(([taskId, comments]) => [
+              taskId,
+              comments.filter((c) => c.id !== id),
+            ])
+          )
+        );
+      } else if (message.event === "update-comment") {
+        const updatedComment = message.data;
+        setComments((prev) =>
+          Object.fromEntries(
+            Object.entries(prev).map(([taskId, comments]) => [
+              taskId,
+              comments.map((c) =>
+                c.id === updatedComment.id ? updatedComment : c
+              ),
+            ])
+          )
+        );
       }
-        else if (message.event === "delete-comment") {
-          const { id } = message.data;
-          setComments((prev) =>
-            Object.fromEntries(
-              Object.entries(prev).map(([taskId, comments]) => [
-                taskId,
-                comments.filter((c) => c.id !== id),
-              ])
-            )
-          );
-        } else if (message.event === "update-comment") {
-          const updatedComment = message.data;
-          setComments((prev) =>
-            Object.fromEntries(
-              Object.entries(prev).map(([taskId, comments]) => [
-                taskId,
-                comments.map((c) =>
-                  c.id === updatedComment.id ? updatedComment : c
-                ),
-              ])
-            )
-          );
-        }
-      };
-    
+    };
 
     return () => {
       socket.close();
@@ -210,26 +207,28 @@ const Avancement = () => {
         Tache a faire :
       </h1>
 
-      {tache.map((task) => (
-          <TaskCard
-            task={task}
-            handleDeleteComment={handleDeleteComment}
-            handleOpenEditCommentModal={handleOpenEditCommentModal}
-            currentUser={currentUser}
-            progressUpdates={progressUpdates}
-            handleFileAttachment={handleFileAttachment}
-            handleProgressChange={handleProgressChange}
-            comments={comments}
-            handleSubmit={handleSubmit}
-            getMyAdvancement={getMyAdvancement}
-            setNewTask={setNewTask}
-            setShowModal={setShowModal}
-            setTaskId={setTaskId}
-            setIsEditing={setIsEditing}
-            key={task.id}
-          />
-        ))}
-  
+      {tache
+  .filter((task) => !task.valide) // Filter out validated tasks
+  .map((task) => (
+    <TaskCard
+      task={task}
+      handleDeleteComment={handleDeleteComment}
+      handleOpenEditCommentModal={handleOpenEditCommentModal}
+      currentUser={currentUser}
+      progressUpdates={progressUpdates}
+      handleFileAttachment={handleFileAttachment}
+      handleProgressChange={handleProgressChange}
+      comments={comments}
+      handleSubmit={handleSubmit}
+      getMyAdvancement={getMyAdvancement}
+      setNewTask={setNewTask}
+      setShowModal={setShowModal}
+      setTaskId={setTaskId}
+      setIsEditing={setIsEditing}
+      key={task.id}
+    />
+  ))}
+
       {showModal && (
         <div className="fixed z-10 inset-0 overflow-y-auto">
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -374,14 +373,16 @@ const Avancement = () => {
       )}
 
       <hr className="h-[1px] bg-gray-200 border-0" />
-      <h1 className="text-2xl font-bold  text-gray-800 mb-6">
-      Taches validé</h1>
+      <h1 className="text-2xl font-bold  text-gray-800 mb-6">Taches validé</h1>
 
       {validTasks.length === 0 ? (
         <p className="text-gray-600">Aucune tâche validée pour le moment.</p>
       ) : (
         validTasks.map((task) => (
-          <div key={task.id} className="p-6 bg-green-100 border border-gray-300 rounded-lg shadow-lg mb-5">
+          <div
+            key={task.id}
+            className="p-6 bg-green-100 border border-gray-300 rounded-lg shadow-lg mb-5"
+          >
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">{task.name}</h2>
               <span className="text-sm text-gray-500">

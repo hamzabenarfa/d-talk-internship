@@ -193,7 +193,7 @@ const Stage = () => {
         Ajouter Tâche
       </button>
 
-      <section className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <section className="p-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
         {tasks.map((task) => (
           <TaskCard
             task={task}
