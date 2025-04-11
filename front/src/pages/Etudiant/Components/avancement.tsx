@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import { FaEdit, FaTrashAlt, FaCheckCircle } from "react-icons/fa";
+import {FaCheckCircle } from "react-icons/fa";
 import axiosInstance from "../../../../axios-instance";
 import Toast from "react-hot-toast";
+import TaskCard from "@/pages/Encadrant/page/stage/components/task-card";
+import { useSelector } from "react-redux";
 const Avancement = () => {
   const [tache, setTache] = useState([]);
   const [comments, setComments] = useState({});
@@ -10,6 +12,9 @@ const Avancement = () => {
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [taskId, setTaskId] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+  const userId = useSelector((state) => state.auth.user.user.id);
+
   const [newTask, setNewTask] = useState({
     name: "",
     description: "",
@@ -84,6 +89,7 @@ const Avancement = () => {
     getMyAdvancement();
 
     fetchTasks();
+    setCurrentUser(userId);
   }, []);
 
   const fetchComments = async (taskId) => {
@@ -205,112 +211,25 @@ const Avancement = () => {
       </h1>
 
       {tache.map((task) => (
-        !task.valide && 
-        (<div
-          key={task.id}
-          className={`p-6 border border-gray-300 rounded-lg shadow-lg mb-5 ${
-            task.valide ? "bg-green-100" : "bg-white"
-          } `}
-        >
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center gap-4">
-              <h2 className="text-xl font-semibold">{task.name}</h2>
-              <span className="text-sm font-medium text-gray-500">
-                Échéance dans {calculateDeadlineDays(task.deadline)} jours
-              </span>
-            </div>
-          </div>
-          <p className="text-gray-600 mb-3">{task.description}</p>
-          {task.valide ? (
-            <p className="text-green-600 font-medium flex items-center gap-2">
-              <FaCheckCircle /> Ce task a été validé.
-            </p>
-          ) : (
-            <>
-              <textarea
-                className="w-full p-3 border border-gray-300 rounded-lg mb-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
-                placeholder="Mettez à jour votre progrès..."
-                value={progressUpdates[task.id] || ""}
-                onChange={(e) => handleProgressChange(task.id, e.target.value)}
-              />
-              <label className="block mb-2 cursor-pointer">
-                <span className="sr-only">Choisir le fichier</span>
-                <input
-                  type="file"
-                  multiple
-                  className="block w-full text-sm text-gray-500
-                                                file:mr-4 file:py-2 file:px-4
-                                                file:rounded-full file:border-0
-                                                file:text-sm file:font-semibold
-                                                file:bg-blue-50 file:text-blue-700
-                                                hover:file:bg-blue-100"
-                  onChange={(e) =>
-                    handleFileAttachment(task.id, Array.from(e.target.files))
-                  }
-                />
-              </label>
-              <div className="flex flex-row justify-between gap-4 py-2 rounded-md">
-                <button
-                  className="bg-blue-600 hover:bg-blue-700  w-full text-white font-bold py-2 px-4 rounded-lg transition duration-300 transform hover:scale-105 shadow-lg"
-                  onClick={() => handleSubmit(task.id)}
-                >
-                  Soumettre
-                </button>
-                <button
-                  className="bg-red-600 hover:bg-red-700  text-white font-bold py-2 px-8 rounded-lg transition duration-300 transform hover:scale-105 shadow-lg"
-                  onClick={() => handleCancel()}
-                >
-                  Annuler
-                </button>
-              </div>
-            </>
-          )}
-          {comments[task.id] && comments[task.id].length > 0 && (
-            <div className="mt-4">
-              <h4 className="font-medium text-gray-700">Commentaires:</h4>
-              <ul className="list-disc list-inside text-gray-700">
-                {comments[task.id].map((comment) => (
-                  <li
-                    key={comment.id}
-                    className="flex justify-between items-start mb-2"
-                  >
-                    <div className=" w-full">
-                      <div className="flex justify-between gap-2">
-                        <p className="text-sm font-bold text-gray-700 capitalize">
-                          {" "}
-                          {comment.auteurName}
-                        </p>
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => handleOpenEditCommentModal(comment)}
-                            className="text-blue-500"
-                          >
-                            <FaEdit />
-                          </button>
-                          <button
-                            onClick={() =>
-                              handleDeleteComment(comment.id, task.id)
-                            }
-                            className="text-red-500"
-                          >
-                            <FaTrashAlt />
-                          </button>
-                        </div>
-                      </div>
-                      <hr className="" />
-                      <p className="text-gray-600">{comment.content}</p>
-                      <p className="text-sm text-gray-500">
-                        {new Date(comment.date).toLocaleString()}
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>)
-      ))}
-
+          <TaskCard
+            task={task}
+            handleDeleteComment={handleDeleteComment}
+            handleOpenEditCommentModal={handleOpenEditCommentModal}
+            currentUser={currentUser}
+            progressUpdates={progressUpdates}
+            handleFileAttachment={handleFileAttachment}
+            handleProgressChange={handleProgressChange}
+            comments={comments}
+            handleSubmit={handleSubmit}
+            getMyAdvancement={getMyAdvancement}
+            setNewTask={setNewTask}
+            setShowModal={setShowModal}
+            setTaskId={setTaskId}
+            setIsEditing={setIsEditing}
+            key={task.id}
+          />
+        ))}
+  
       {showModal && (
         <div className="fixed z-10 inset-0 overflow-y-auto">
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
