@@ -36,7 +36,30 @@ const Stage = () => {
           [taskId]: [...(prevComments[taskId] || []), comment],
         }));
       }
-    };
+    else if (message.event === "delete-comment") {
+      const { id } = message.data;
+      setComments((prev) =>
+        Object.fromEntries(
+          Object.entries(prev).map(([taskId, comments]) => [
+            taskId,
+            comments.filter((c) => c.id !== id),
+          ])
+        )
+      );
+    } else if (message.event === "update-comment") {
+      const updatedComment = message.data;
+      setComments((prev) =>
+        Object.fromEntries(
+          Object.entries(prev).map(([taskId, comments]) => [
+            taskId,
+            comments.map((c) =>
+              c.id === updatedComment.id ? updatedComment : c
+            ),
+          ])
+        )
+      );
+    }
+  };
 
     return () => {
       socket.close();

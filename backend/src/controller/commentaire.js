@@ -26,7 +26,7 @@ const createCommentaire = async (req, res) => {
 
     const commentaire = await prisma.commentaire.create({
       data: {
-        tacheID: parseInt(id), // Correct field name
+        tacheID: parseInt(id), 
         content,
         date: commentaireDate,
         auteurID,
@@ -54,6 +54,13 @@ const deleteCommentaire = async (req, res) => {
     await prisma.commentaire.delete({
       where: { id: parseInt(id) },
     });
+    WebSocketServerInstance.broadcast(
+      JSON.stringify({
+        event: "delete-comment",
+        data: { id: parseInt(id) },
+      })
+    );
+
     res.json({ message: "Commentaire deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: "Failed to delete commentaire" });
@@ -68,6 +75,13 @@ const updateCommentaire = async (req, res) => {
       where: { id: parseInt(id) },
       data: { content },
     });
+    WebSocketServerInstance.broadcast(
+      JSON.stringify({
+        event: "update-comment",
+        data: commentaire,
+      })
+    );
+
     res.json(commentaire);
   } catch (error) {
     res.status(500).json({ error: "Failed to update commentaire" });
@@ -82,7 +96,6 @@ const getAllCommentaires = async (req, res) => {
     res.json(commentaires);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch commentaires" });
-    console.log("🚀 ~ getCommentaires ~ error:", error);
   }
 };
 module.exports = {
