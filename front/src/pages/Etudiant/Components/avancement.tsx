@@ -51,12 +51,11 @@ const Avancement = () => {
       }
     };
 
-    // Close the WebSocket connection on component unmount
     return () => {
       socket.close();
     };
   }, []);
-  
+
   useEffect(() => {
     getMyAdvancement();
 
@@ -68,7 +67,6 @@ const Avancement = () => {
       const response = await axiosInstance.get(
         `commentaire/get/task/${taskId}`
       );
-      console.log(response);
       setComments((prev) => ({ ...prev, [taskId]: response.data }));
     } catch (error) {
       Toast.error(error.response.data.message);
@@ -173,7 +171,6 @@ const Avancement = () => {
     return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
   };
   const validTasks = tache.filter((task) => task.valide);
-  console.log("🚀 ~ Avancement ~ validTasks:", validTasks)
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">

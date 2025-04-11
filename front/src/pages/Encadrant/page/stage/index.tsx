@@ -21,10 +21,34 @@ const Stage = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const userId = useSelector((state) => state.auth.user.user.id);
 
+
+  useEffect(() => {
+    const socket = new WebSocket("ws://localhost:8081");
+
+    // Listen for messages from the server
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+     if (message.event === "new-comment") {
+        // Update comments for the specific task
+        const { taskId, comment } = message.data;
+        setComments((prevComments) => ({
+          ...prevComments,
+          [taskId]: [...(prevComments[taskId] || []), comment],
+        }));
+      }
+    };
+
+    return () => {
+      socket.close();
+    };
+  }, []);
+
   useEffect(() => {
     getMyAdvancement();
     setCurrentUser(userId);
   }, [id]);
+
+  
 
   async function getMyAdvancement() {
     try {

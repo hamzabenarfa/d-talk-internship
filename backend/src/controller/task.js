@@ -11,7 +11,6 @@ const getMyTasks = async (req, res) => {
         status: Status.ACCEPTED,
       },
     });
-    console.log(myCandidature.supervisorId)
     if (!myCandidature) {
       return res.status(400).json({ message: "No candidature found" });
     }

@@ -1,4 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
+const { WebSocketServerInstance } = require("../lib/websocket");
 const prisma = new PrismaClient();
 
 const getCommentaires = async (req, res) => {
@@ -9,7 +10,6 @@ const getCommentaires = async (req, res) => {
     });
     res.json(commentaires);
   } catch (error) {
-    console.log("🚀 ~ getCommentaires ~ error:", error)
     res.status(500).json({ error: "Failed to fetch commentaires" });
   }
 };
@@ -29,13 +29,21 @@ const createCommentaire = async (req, res) => {
         tacheID: parseInt(id), // Correct field name
         content,
         date: commentaireDate,
-        auteurID
+        auteurID,
       },
     });
 
+    WebSocketServerInstance.broadcast(
+      JSON.stringify({
+        event: "new-comment",
+        data: {
+          taskId: parseInt(id),
+          comment: commentaire,
+        },
+      })
+    );
     res.json(commentaire);
   } catch (error) {
-    console.log("🚀 ~ createCommentaire ~ error:", error)
     res.status(500).json({ error: "Failed to create commentaire" });
   }
 };
@@ -69,17 +77,18 @@ const getAllCommentaires = async (req, res) => {
   const { id } = req.params;
   try {
     const commentaires = await prisma.commentaire.findMany({
-      where: { tacheID: parseInt(id) }
+      where: { tacheID: parseInt(id) },
     });
     res.json(commentaires);
   } catch (error) {
-    console.log("🚀 ~ getCommentaires ~ error:", error)
     res.status(500).json({ error: "Failed to fetch commentaires" });
+    console.log("🚀 ~ getCommentaires ~ error:", error);
   }
-}
+};
 module.exports = {
   getCommentaires,
   createCommentaire,
   deleteCommentaire,
-  updateCommentaire,getAllCommentaires
+  updateCommentaire,
+  getAllCommentaires,
 };
