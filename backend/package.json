@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@faker-js/faker": "^9.0.2",
-    "@prisma/client": "^5.9.1",
+    "@prisma/client": "^6.5.0",
     "archiver": "^7.0.1",
     "bcrypt": "^5.1.1",
     "bullmq": "^4.16.5",
@@ -30,7 +30,7 @@
     "xss-clean": "^0.1.4"
   },
   "devDependencies": {
-    "prisma": "^5.9.1"
+    "prisma": "^6.5.0"
   },
   "keywords": [],
   "author": "",

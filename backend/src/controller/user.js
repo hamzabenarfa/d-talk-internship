@@ -4,7 +4,11 @@ const bcrypt = require("bcrypt");
 
 const getUsers = async (req, res) => {
   try {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+      omit: {
+        password: true,
+      },
+    });
     res.json(users);
   } catch (error) {
     res.status(500).json({ error: "Error retrieving users" });
@@ -20,29 +24,37 @@ const myProfile = async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    const {password, ...rest} = user;
+    const { password, ...rest } = user;
     res.json(rest);
-  }
-  catch (error) {
+  } catch (error) {
     res.status(500).json({ error: "Error retrieving user" });
   }
 };
 
 const changePassword = async (req, res) => {
-  const {id } = req.user;
-  const { currentPassword, newPassword ,confirmPassword } = req.body;
-  console.log(req.body)
+  const { id } = req.user;
+  const { currentPassword, newPassword, confirmPassword } = req.body;
+  console.log(req.body);
   try {
     if (currentPassword === newPassword) {
-      return res.status(400).json({ error: "New password must be different from old password" });
+      return res
+        .status(400)
+        .json({ error: "New password must be different from old password" });
     }
 
-    if(!currentPassword || !newPassword || !confirmPassword){
-      return res.status(400).json({ error: "Current password, new password and confirm password are required" }); 
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      return res
+        .status(400)
+        .json({
+          error:
+            "Current password, new password and confirm password are required",
+        });
     }
 
-    if(newPassword !== confirmPassword){
-      return res.status(400).json({ error: "Password and confirm password must be the same" });
+    if (newPassword !== confirmPassword) {
+      return res
+        .status(400)
+        .json({ error: "Password and confirm password must be the same" });
     }
     const user = await prisma.user.findUnique({
       where: { id },
@@ -50,7 +62,10 @@ const changePassword = async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    const isPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
     if (!isPasswordValid) {
       return res.status(400).json({ error: "Old password is incorrect" });
     }
@@ -61,11 +76,10 @@ const changePassword = async (req, res) => {
     });
     res.status(204).json();
   } catch (error) {
-    console.log("🚀 ~ changePassword ~ error:", error)
+    console.log("🚀 ~ changePassword ~ error:", error);
     res.status(500).json({ error: "Error updating password" });
   }
 };
-
 
 const getUserByEmail = async (email) => {
   try {
@@ -112,32 +126,30 @@ const createUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-    const { id } = req.params;
-    const data = req.body;
-  
-    try {
-      const existingUser = await prisma.user.findUnique({
-        where: { id: parseInt(id) }, // Ensure id is an integer
-      });
-  
-      console.log("🚀 ~ updateUser ~ existingUser:", existingUser);
-      if (!existingUser) {
-        return res.status(404).json({ error: "User not found" });
-      }
-  
-      const updatedUser = await prisma.user.update({
-        where: { id: parseInt(id) }, // Ensure id is an integer
-        data: { ...data },
-      });
-  
-      console.log("🚀 ~ updateUser ~ updatedUser:", updatedUser);
-      res.json(updatedUser);
-    } catch (error) {
-      console.error("Error updating user:", error); // Log the actual error
-      res.status(500).json({ error: "Error updating user" });
+  const { id } = req.params;
+  const data = req.body;
+
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: { id: parseInt(id) }, // Ensure id is an integer
+    });
+
+    if (!existingUser) {
+      return res.status(404).json({ error: "User not found" });
     }
-  };
-  
+
+    const updatedUser = await prisma.user.update({
+      where: { id: parseInt(id) }, // Ensure id is an integer
+      data: { ...data, dateDeNaissance: new Date(data.dateDeNaissance) },
+    });
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error("Error updating user:", error); // Log the actual error
+    res.status(500).json({ error: "Error updating user" });
+  }
+};
+
 const deleteUser = async (req, res) => {
   const { id } = req.params;
 
@@ -154,7 +166,7 @@ const deleteUser = async (req, res) => {
     });
     res.status(204).json();
   } catch (error) {
-    console.log("🚀 ~ deleteUser ~ error:", error)
+    console.log("🚀 ~ deleteUser ~ error:", error);
     res.status(500).json({ error: "Error deleting user" });
   }
 };
@@ -162,18 +174,18 @@ const deleteUser = async (req, res) => {
 const getProfesseurs = async (req, res) => {
   try {
     const professeurs = await prisma.user.findMany({
-        where: { role: "PROF_SUPERVISOR" },
-        select: {
-          id: true,
-          nom: true,
-          prenom: true,
-        },
+      where: { role: "PROF_SUPERVISOR" },
+      select: {
+        id: true,
+        nom: true,
+        prenom: true,
+      },
     });
     res.json(professeurs);
   } catch (error) {
     res.status(500).json({ error: "Error retrieving professeurs" });
   }
-}
+};
 
 const updateprofile = async (req, res) => {
   const { id } = req.user;
@@ -195,10 +207,10 @@ const updateprofile = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Error updating user" });
   }
-}
+};
 
-const deleteAccount = async(req,res)=>{
-  const {id} = req.user;
+const deleteAccount = async (req, res) => {
+  const { id } = req.user;
   try {
     const existingUser = await prisma.user.findUnique({
       where: { id },
@@ -206,19 +218,17 @@ const deleteAccount = async(req,res)=>{
     if (!existingUser) {
       return res.status(404).json({ error: "User not found" });
     }
-    
+
     await prisma.user.delete({
-      where:{
-        id
-      }
-    })
-    
+      where: {
+        id,
+      },
+    });
   } catch (error) {
-    console.log("🚀 ~ deleteAccount ~ error:", error)
+    console.log("🚀 ~ deleteAccount ~ error:", error);
     res.status(500).json({ error: "Error deleting user" });
   }
-}
-
+};
 
 module.exports = {
   getUsers,
@@ -231,5 +241,5 @@ module.exports = {
   myProfile,
   changePassword,
   deleteAccount,
-  updateprofile
+  updateprofile,
 };

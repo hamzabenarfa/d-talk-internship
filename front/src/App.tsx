@@ -16,7 +16,7 @@ import Candidat from "./pages/Admin/Components/candidat";
 import StagiairesAcceptes from "./pages/Admin/Components/stagaire";
 import Stage from "./pages/Encadrant/page/stage";
 import ListeCandidature from "./pages/Etudiant/Components/liste-candidature";
-import Main from "./pages/Encadrant/page/main"
+import Main from "./pages/Encadrant/page/main";
 import ValidationStage from "./pages/Encadrant/page/ValidationStage";
 import ProfileEnc from "./pages/Encadrant/page/ProfileEnc";
 import Job from "./pages/search";
@@ -45,10 +45,9 @@ function App() {
                 { path: "gestion-sujet", element: <GestionSujet /> },
                 { path: "candidats", element: <Candidat /> },
                 { path: "stagaire", element: <StagiairesAcceptes /> },
-                { path: "category", element: <Category /> }
-
+                { path: "category", element: <Category /> },
               ],
-            }
+            },
           ],
         },
         {
@@ -60,24 +59,28 @@ function App() {
               element: <Etudiant />,
               children: [
                 { path: "avancement", element: <Avancement /> },
-                { path: "Liste-Candidature", element: <ListeCandidature/> }
+                { path: "Liste-Candidature", element: <ListeCandidature /> },
               ],
-            }
+            },
           ],
         },
         {
           path: "encadrant",
-          element: <Encadrant />,
+          element: <ProtectedRoute rolesRequired={["PROF_SUPERVISOR"]} />,
           children: [
-            { path: "", element: <Main /> },
-            { path: "stage/:id", element: <Stage /> },
-            { path: "validation-stage", element: <ValidationStage /> },
-            { path: "profil", element: <ProfileEnc /> },
-
-
+            {
+              path: "",
+              element: <Encadrant />,
+              children: [
+                { path: "", element: <Main /> },
+                { path: "stage/:id", element: <Stage /> },
+                { path: "validation-stage", element: <ValidationStage /> },
+                { path: "profil", element: <ProfileEnc /> },
+              ],
+            },
           ],
         },
-        { path: "sujet/:id", element: <Sujet /> }
+        { path: "sujet/:id", element: <Sujet /> },
       ],
     },
   ]);

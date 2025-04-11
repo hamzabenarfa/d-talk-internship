@@ -43,7 +43,7 @@ enum WorkArrangement {
 model sujet {
   id          Int             @id @default(autoincrement())
   titre       String
-  description String
+  description String @db.Text
   duration    String
   deadline    DateTime?
   work        WorkArrangement

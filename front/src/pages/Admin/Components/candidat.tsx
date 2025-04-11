@@ -7,6 +7,7 @@ const Candidat = () => {
   const [candidates, setCandidates] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchCandidates();

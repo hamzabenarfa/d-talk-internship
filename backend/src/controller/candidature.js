@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const archiver = require("archiver");
 const { sendEmail } = require("../lib/mailer");
+const { error } = require("console");
 
 const getCandidatureById = async (req, res) => {
   const { id } = req.params;
@@ -83,7 +84,6 @@ const createCandidatures = async (req, res) => {
       resources: candidatures,
     });
   } catch (error) {
-    console.log("🚀 ~ createCandidatures ~ error:", error);
     res.status(500).json({ error: "Failed to create candidature" });
   }
 };
@@ -125,7 +125,7 @@ const acceptCandidature = async (req, res) => {
       },
     });
     if (candidatureAlreadyAccepted) {
-      return res.status(400).json({ error: "Candidature deja accepte" });
+      return res.status(400).json({ error: "Candidature deja accepté au autre stage" });
     }
     const updatedCandidature = await prisma.candidature.update({
       where: { id: parseInt(id) },
@@ -185,7 +185,7 @@ const getCandidatureResources = async (req, res) => {
       },
     });
     if (!candidatureExist) {
-      return res.status(400).json({ error: "Candidature mouch mawjoud" });
+      return res.status(400).json({ error: "Candidature n'existe pas" });
     }
     const candidature = await prisma.candidature.findUnique({
       where: { id: candidatureId },
@@ -214,7 +214,7 @@ const downloadAllResources = async (req, res) => {
     });
 
     if (!resources.length) {
-      return res.status(404).send("No resources found.");
+      return res.status(404).json({error:"Il n'y a aucun document disponible pour cet utilisateur."});
     }
 
     const archive = archiver("zip", { zlib: { level: 9 } });

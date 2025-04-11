@@ -183,8 +183,8 @@ const UserFormModal = ({ user, onClose, onUpdate, token, editMode }) => {
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                         >
                             <option value="CANDIDAT">Candidat</option>
-                            <option value="PROF_SUPERVISOR">Professeur Superviseur</option>
-                            <option value="INTERN">Stagiaire</option>
+                            <option value="PROF_SUPERVISOR">Encadreur</option>
+                            {/* <option value="INTERN">Stagiaire</option> */}
                         </select>
                     </div>
                     <div className="flex justify-end space-x-3 mt-4">
