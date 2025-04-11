@@ -69,6 +69,26 @@ const Stage = () => {
           )
         );
       }
+      else if (message.event === "update-task") {
+        // Update the specific task in the state
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task.id === message.data.id ? message.data : task
+          )
+        );
+      } else if (message.event === "delete-task") {
+        // Remove the deleted task from the state
+        setTasks((prevTasks) =>
+          prevTasks.filter((task) => task.id !== message.data.id)
+        );
+      } else if (message.event === "toggle-task") {
+        // Update the toggled task in the state
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task.id === message.data.id ? message.data : task
+          )
+        );
+      }
     };
 
     return () => {

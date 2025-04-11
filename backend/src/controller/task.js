@@ -72,34 +72,34 @@ const createTask = async (req, res) => {
 
 const updateTask = async (req, res) => {
   const { id } = req.params;
-  const { name, description, deadline, candidatureId } = req.body;
+  const { name, description, deadline } = req.body;
   const userId = req.user.id;
 
   const taskDeadline = new Date(deadline);
   try {
     const taskExiste = await prisma.task.findFirst({
         where: {
-            name,
+            id:+id
         },
         });
     if (!taskExiste) {
-        return res.status(400).json({ message: "Task existe" });
+        return res.status(400).json({ message: "Task n'existe pas" });
     }
-    const candidature = await prisma.candidature.findFirst({
-      where: {
-        userId,
-        status: Status.ACCEPTED,
-      },
-    });
     const updatedTask = await prisma.task.update({
       where: { id: parseInt(id) },
       data: {
         name,
         description,
         deadline: taskDeadline,
-        candidatureId:candidature.id,
       },
     });
+
+    WebSocketServerInstance.broadcast(
+      JSON.stringify({
+        event: "update-task",
+        data: updatedTask,
+      })
+    );
     res.json(updatedTask);
   } catch (error) {
     console.log("🚀 ~ updateTask ~ error:", error)
@@ -113,6 +113,12 @@ const deleteTask = async (req, res) => {
     await prisma.task.delete({
       where: { id: parseInt(id) },
     });
+    WebSocketServerInstance.broadcast(
+      JSON.stringify({
+        event: "delete-task",
+        data: { id: parseInt(id) },
+      })
+    );
     res.json({ message: "Task deleted" });
   } catch (error) {
     res.status(500).json({ error: "Failed to delete task" });
@@ -140,6 +146,12 @@ const valideTaskToggle = async (req, res) => {
       where: { id: parseInt(id) },
       data: { valide: !task.valide },
     });
+    WebSocketServerInstance.broadcast(
+      JSON.stringify({
+        event: "toggle-task",
+        data: updatedTask,
+      })
+    );
     res.json(updatedTask);
   } catch (error) {
     res.status(500).json({ error: "Failed to update task" });
