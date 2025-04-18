@@ -47,12 +47,12 @@ export const InternshipSection = ({
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {internships.slice(0, 3).map((internship) => (
+            {internships &&internships.slice(0, 3).map((internship) => (
               <InternshipCard
                 id={internship.id}
                 key={internship.id}
                 title={internship.titre}
-                department={`${internship.category.name}`}
+                department={`${internship.category?.name}`}
                 duration={internship.duration}
                 type={internship.work}
                 description={internship.description}

@@ -91,12 +91,36 @@ const createCandidatures = async (req, res) => {
 const refuseCandidature = async (req, res) => {
   const { id } = req.params;
   try {
+    const candidature = await prisma.candidature.findFirst({
+      where: {
+        id: parseInt(id),
+      },
+      include: {
+        user: {
+          select: {
+            nom: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    const candidatureAlreadyAccepted = await prisma.candidature.findFirst({
+      where: {
+        userId: candidature.userId,
+        status: "ACCEPTE",
+      },
+    });
+    if (candidatureAlreadyAccepted) {
+      return res.status(400).json({ error: "Candidature deja accepté au autre stage" });
+    }
     const updatedCandidature = await prisma.candidature.update({
       where: { id: parseInt(id) },
       data: { status: "REFUSE" },
     });
     res.json(updatedCandidature);
   } catch (error) {
+    console.log("🚀 ~ refuseCandidature ~ error:", error)
     res.status(500).json({ error: "Failed to refuse candidature" });
   }
 };
@@ -140,9 +164,10 @@ const acceptCandidature = async (req, res) => {
     });
     const email = candidature.user.email;
     const name = candidature.user.nom;
+
     const sujetName = updatedCandidature.sujet.titre;
 
-    await sendEmail(email, "stage affecté", name, sujetName);
+    await sendEmail(email, "stage affecté", name);
     res.json(updatedCandidature);
   } catch (error) {
     res.status(500).json({ error: "Failed to accept candidature" });

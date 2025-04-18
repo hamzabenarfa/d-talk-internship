@@ -9,7 +9,7 @@ interface InternshipCardProps {
   department: string;
   duration: string;
   type: "Remote" | "On-site" | "Hybrid";
-  description: string;
+  description: string | "";
   deadline: string;
 }
 
@@ -43,7 +43,7 @@ export default function InternshipCard({
         </div>
       </div>
 
-      <p className="mb-6 text-gray-600 grow">{description}</p>
+      <p className="mb-6 text-gray-600 grow">{description || ""}</p>
 
       <Link to={`/sujet/${id}`}>
         <Button className="mt-auto w-full bg-[#b89048] hover:bg-[#a07a30] text-white">

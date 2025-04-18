@@ -55,9 +55,7 @@ const Candidat = () => {
       Toast.success(`Candidature ${id} refusée.`);
       fetchCandidates();
     } catch (error) {
-      Toast.error(
-        `Erreur lors du refus de la candidature ${id}: ${error.message}`
-      );
+      Toast.error(error.response.data.error);
     }
   };
 

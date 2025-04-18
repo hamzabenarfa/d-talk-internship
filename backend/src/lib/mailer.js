@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-async function sendEmail(to, subject, recipientName, sujetName) {
+async function sendEmail(to, subject, recipientName, sujetName ) {
   try {
    
     const transporter = nodemailer.createTransport({
