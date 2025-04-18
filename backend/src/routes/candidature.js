@@ -14,24 +14,28 @@ const {
   getCandidatureResources,
   downloadAllResources,
   getAllAcceptedCandidatures,
-  assignSupervisor,getValidationStage,
-  getMyAvancement,getAvancementBySupervisor,getCandidatCandidatures
+  assignSupervisor,
+  getValidationStage,
+  getMyAvancement,
+  getAvancementBySupervisor,
+  getCandidatCandidatures,
+  validerCandidature,
 } = require("../controller/candidature");
 
-router.get("/avancement/supervisor",getAvancementBySupervisor);
+router.get("/avancement/supervisor", getAvancementBySupervisor);
 router.get("/", getCandidatures);
 
-router.get("/allAvancements",getAllAcceptedCandidatures);
-router.get("/my-avancement",getMyAvancement)
+router.get("/allAvancements", getAllAcceptedCandidatures);
+router.get("/my-avancement", getMyAvancement);
 router.get("/my-Candidatures", getMyCandidatures);
 
-router.get('/validation-stage',getValidationStage)
+router.get("/validation-stage", getValidationStage);
 
-router.get('/candidat',getCandidatCandidatures);
+router.get("/candidat", getCandidatCandidatures);
 
 router.get("/resource/:id", getCandidatureResources);
 
-router.get("/resources/download/:candidatureId", downloadAllResources );
+router.get("/resources/download/:candidatureId", downloadAllResources);
 router.get("/:id", getCandidatureById);
 
 router.post(
@@ -42,8 +46,12 @@ router.post(
 
 router.put("/accepter/:id", acceptCandidature);
 router.put("/rejeter/:id", refuseCandidature);
-router.put('/encadrant/:supervisorId/candidat/:internId/sujet/:sujetId', assignSupervisor);
-router.delete("/:id", deleteCandidatures);
+router.put("/valider/:id", validerCandidature);
 
+router.put(
+  "/encadrant/:supervisorId/candidat/:internId/sujet/:sujetId",
+  assignSupervisor
+);
+router.delete("/:id", deleteCandidatures);
 
 module.exports = router;

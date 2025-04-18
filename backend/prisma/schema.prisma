@@ -80,6 +80,7 @@ model candidature {
   user   User? @relation(fields: [userId], references: [id])
 
   supervisorId Int? @default(0)
+  valide        Boolean       @default(false)
 
   status Status @default(EN_ATTENTE)
 

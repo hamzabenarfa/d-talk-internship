@@ -430,6 +430,30 @@ const getValidationStage = async (req, res) => {
   }
 };
 
+
+const validerCandidature = async(req,res)=>{
+  const {candidatureId} = req.params.id;
+  const userId = req.user.id;
+
+  try {
+
+    const candidatureExist = await prisma.candidature.findUnique({
+      where :{
+        id:+candidatureId
+      }
+    })
+    
+    if(!candidatureExist) res.status(404).json({error:"candidature n'existe pas"})
+    
+    if(candidatureExist.status!=Status.ACCEPTE) res.status(401).json({error:"candidature doit etre accepté"})
+    
+      
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch candidatures" });
+
+  }
+}
+
 module.exports = {
   getCandidatureById,
   getCandidatures,
@@ -446,4 +470,5 @@ module.exports = {
   getAvancementBySupervisor,
   getValidationStage,
   getCandidatCandidatures,
+  validerCandidature
 };

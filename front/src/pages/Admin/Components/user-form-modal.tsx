@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import axiosInstance from "../../../../axios-instance";
+import { format, parseISO } from "date-fns"; // Import `format` and `parseISO`
 
 const UserFormModal = ({ user, onClose, onUpdate, token, editMode }) => {
     const [formData, setFormData] = useState({
@@ -10,19 +11,25 @@ const UserFormModal = ({ user, onClose, onUpdate, token, editMode }) => {
         telephone: "",
         role: "CANDIDAT", // Default role
         password: "",
-        dateDeNaissance: "",
+        dateDeNaissance: "", // This will hold the formatted date
     });
+    console.log(user);
     const [errors, setErrors] = useState({});
 
     useEffect(() => {
         if (editMode && user) {
+            // Format the date using date-fns
+            const formattedDate = user.dateDeNaissance
+                ? format(parseISO(user.dateDeNaissance), "yyyy-MM-dd")
+                : "";
+
             setFormData({
                 nom: user.nom || "",
                 prenom: user.prenom || "",
                 email: user.email || "",
                 telephone: user.telephone || "",
                 role: user.role || "CANDIDAT",
-                dateDeNaissance: user.dateDeNaissance || "",
+                dateDeNaissance: formattedDate, // Use the formatted date
             });
         }
     }, [user, editMode]);
@@ -148,7 +155,7 @@ const UserFormModal = ({ user, onClose, onUpdate, token, editMode }) => {
                     )}
                     <div>
                         <label
-                            htmlFor="role"
+                            htmlFor="dateDeNaissance"
                             className="block text-sm font-medium text-gray-700"
                         >
                             Date De Naissance
@@ -159,7 +166,7 @@ const UserFormModal = ({ user, onClose, onUpdate, token, editMode }) => {
                             type="date"
                             required
                             className={`appearance-none rounded-none relative block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
-                            value={formData.dateDeNaissance}
+                            value={formData.dateDeNaissance} // Use the formatted date here
                             onChange={handleChange}
                         />
                         {errors.dateDeNaissance && (
@@ -180,6 +187,7 @@ const UserFormModal = ({ user, onClose, onUpdate, token, editMode }) => {
                             name="role"
                             value={formData.role}
                             onChange={handleChange}
+                            disabled={user.role === "RESPONSABLE"}
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                         >
                             <option value="CANDIDAT">Candidat</option>
