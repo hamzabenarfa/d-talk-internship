@@ -134,6 +134,10 @@ const Avancement = () => {
     const { id, content, tacheID } = editComment
     const updatedComment = { content, date: new Date().toISOString() }
     try {
+      if (!content) {
+        toast.error("Le commentaire ne peut pas être vide");
+        return;
+      }
       await axiosInstance.put(`commentaire/update/${id}`, updatedComment)
       await fetchComments(tacheID)
       setEditCommentModal(false)
@@ -293,6 +297,7 @@ const Avancement = () => {
           <div className="grid gap-4 py-4">
             <textarea
               placeholder="Votre commentaire"
+              
               value={editComment.content}
               onChange={(e) =>
                 setEditComment((prev) => ({

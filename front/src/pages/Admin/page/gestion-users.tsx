@@ -1,16 +1,7 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
-import { format } from "date-fns"
-import {
-  Search,
-  Plus,
-  Pencil,
-  Trash2,
-
-} from "lucide-react";
+import { Search, Plus, Pencil, Trash2 } from "lucide-react";
 import UserFormModal from "../Components/user-form-modal";
 import axiosInstance from "../../../../axios-instance";
 import { Button } from "@/components/ui/button";
@@ -32,7 +23,6 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-
 
 const GestionUsers = () => {
   const [users, setUsers] = useState([]);
@@ -131,8 +121,8 @@ const GestionUsers = () => {
         return "Responsable";
       case "CANDIDAT":
         return "Candidat";
-        case "PROF_SUPERVISOR":
-          return "Encadreur";
+      case "PROF_SUPERVISOR":
+        return "Encadreur";
       default:
         return "outline";
     }
@@ -253,7 +243,6 @@ const GestionUsers = () => {
                           </Badge>
                         </TableCell>
                         <TableCell className=" flex flex-row justify-end ">
-                          
                           <Button
                             variant={"ghost"}
                             size={"icon"}
