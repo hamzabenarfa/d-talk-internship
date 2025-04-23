@@ -35,13 +35,7 @@ const Avancement = () => {
     tacheID: null,
   })
 
-  async function getMyAdvancement() {
-    try {
-      const res = await axiosInstance.get("/candidature/my-avancement")
-    } catch (err) {
-      toast.error(err.response.data.error)
-    }
-  }
+
 
   useEffect(() => {
     const socket = new WebSocket("ws://localhost:8081")
@@ -106,7 +100,6 @@ const Avancement = () => {
   }, [])
 
   useEffect(() => {
-    getMyAdvancement()
     fetchTasks()
     setCurrentUser(userId)
   }, [])
@@ -133,7 +126,6 @@ const Avancement = () => {
       setFileAttachments((prev) => ({ ...prev, [id]: [] }))
       toast.success("Commentaire ajouté avec succès")
     } catch (error) {
-      console.error("Error submitting comment:", error)
       toast.error("Erreur lors de l'ajout du commentaire")
     }
   }
@@ -148,7 +140,6 @@ const Avancement = () => {
       toast.success("Commentaire mis à jour avec succès")
     } catch (error) {
       console.error("Error updating comment:", error)
-      toast.error("Erreur lors de la mise à jour du commentaire")
     }
   }
 
@@ -189,45 +180,11 @@ const Avancement = () => {
       })
     } catch (error) {
       console.log(error)
-      toast.error("Erreur lors du chargement des tâches")
     }
   }
 
-  const handleAddTask = async () => {
-    try {
-      if (isEditing) {
-        await axiosInstance.put(`task/update/${taskId}`, newTask)
-        toast.success("Tâche mise à jour avec succès")
-      } else {
-        await axiosInstance.post("task/create", newTask)
-        toast.success("Tâche créée avec succès")
-      }
-      setShowModal(false)
-      setIsEditing(false)
-      setTaskId(null)
-      setNewTask({ name: "", description: "", deadline: "" })
-      fetchTasks()
-    } catch (error) {
-      console.error("Error creating/updating task:", error)
-      toast.error("Erreur lors de la création/mise à jour de la tâche")
-    }
-  }
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setNewTask((prev) => ({ ...prev, [name]: value }))
-  }
 
-  const handleCancel = () => {
-    setProgressUpdates({})
-  }
-
-  const calculateDeadlineDays = (deadline) => {
-    const now = new Date()
-    const end = new Date(deadline)
-    const diff = end - now
-    return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
-  }
 
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" }
@@ -279,7 +236,6 @@ const Avancement = () => {
                 handleProgressChange={handleProgressChange}
                 comments={comments}
                 handleSubmit={handleSubmit}
-                getMyAdvancement={getMyAdvancement}
                 setNewTask={setNewTask}
                 setShowModal={setShowModal}
                 setTaskId={setTaskId}

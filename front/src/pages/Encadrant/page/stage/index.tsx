@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../../../../axios-instance";
 import { useSelector } from "react-redux";
-import Toast from "react-hot-toast";
+import Toast, { toast } from "react-hot-toast";
 import EditComment from "./components/edit-comment";
 import TaskCard from "./components/task-card";
 import AddTask from "./components/add-task";
@@ -185,6 +185,22 @@ const Stage = () => {
   });
   const handleAddTask = async () => {
     try {
+      if (!newTask.name || newTask.name.trim() === "") {
+        Toast.error("Le nom de la tâche est requis.");
+        return;
+      }
+    
+      if (!newTask.description || newTask.description.trim() === "") {
+        Toast.error("La description de la tâche est requise.");
+        return;
+      }
+
+      if (!newTask.deadline ) {
+        Toast.error("La date d'échéance est requise.");
+        return;
+      }
+    
+    
       if (isEditing) {
         await axiosInstance.put(`task/update/${taskId}`, newTask);
       } else {
@@ -196,7 +212,7 @@ const Stage = () => {
 
       await getMyAdvancement();
     } catch (error) {
-      console.error("Error creating/updating task:", error);
+      toast.error(error.response.data.message);
     }
   };
 
@@ -253,17 +269,7 @@ const Stage = () => {
                   Aucune tâche en cours pour le moment.
                 </p>
 
-                <Button
-                  variant="outline"
-                  className="mt-4"
-                  onClick={() => {
-                    setNewTask({ name: "", description: "", deadline: "" });
-                    setIsEditing(false);
-                    setShowModal(true);
-                  }}
-                >
-                  Créer une tâche
-                </Button>
+                
               </CardContent>
             </Card>
           ) : (

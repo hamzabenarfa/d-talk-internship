@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 
+import toast from "react-hot-toast";
 import axiosInstance from "../../../../../../axios-instance";
 
 const EditComment = ({
@@ -12,6 +13,10 @@ const EditComment = ({
     const { id, content, tacheID } = editComment;
     const updatedComment = { content, date: new Date().toISOString() };
     try {
+      if (!content) {
+        toast.error("Le commentaire ne peut pas être vide");
+        return;
+      }
       await axiosInstance.put(`commentaire/update/${id}`, updatedComment);
       await fetchComments(tacheID);
       setEditCommentModal(false);

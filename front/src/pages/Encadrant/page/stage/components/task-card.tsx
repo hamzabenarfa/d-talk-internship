@@ -23,14 +23,12 @@ const TaskCard = ({
   handleProgressChange,
   comments,
   handleSubmit,
-  getMyAdvancement,
   setNewTask,
   setShowModal,
   setTaskId,
   setIsEditing,
 }) => {
 
-  console.log(comments)
   const role = useSelector((state) => state.auth.user.user);
 
   const [showComments, setShowComments] = useState(false)
@@ -58,7 +56,6 @@ const TaskCard = ({
   const onValidateToggle = async (taskId) => {
     try {
       await axiosInstance.put(`task/valide/${taskId}`);
-      getMyAdvancement();
     } catch (error) {
       console.error("Error updating task validation status:", error);
     }
@@ -78,7 +75,7 @@ const TaskCard = ({
     try {
       await axiosInstance.delete(`task/delete/${taskId}`)
       toast.success("Tâche supprimée avec succès")
-      getMyAdvancement()
+
     } catch (error) {
       console.error("Error deleting task:", error)
       toast.error("Erreur lors de la suppression de la tâche")
@@ -218,17 +215,7 @@ const TaskCard = ({
 
               <div className="flex items-center gap-2">
                 <div className="relative">
-                  <input
-                    type="file"
-                    multiple
-                    key={fileInputKey}
-                    onChange={(e) => handleFileChange(e, task.id)}
-                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
-                  />
-                  <Button variant="outline" size="sm" type="button">
-                    <Paperclip size={16} className="mr-2" />
-                    Joindre des fichiers
-                  </Button>
+
                 </div>
 
                 <Button
@@ -242,19 +229,7 @@ const TaskCard = ({
                 </Button>
               </div>
 
-              {selectedFiles.length > 0 && (
-                <div className="mt-2">
-                  <p className="text-xs text-gray-600 mb-1">Fichiers sélectionnés:</p>
-                  <ul className="text-xs text-gray-600">
-                    {selectedFiles.map((file, index) => (
-                      <li key={index} className="flex items-center gap-1">
-                        <Paperclip size={10} />
-                        {file.name}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              
             </div>
           </div>
         )}

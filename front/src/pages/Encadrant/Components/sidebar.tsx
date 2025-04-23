@@ -78,8 +78,8 @@ const Sidebar = () => {
       </header>
 
       {/* Navigation Links */}
-      <nav className="flex-1 overflow-y-auto p-4">
         {myAdvancement.length > 0 && (
+      <nav className="flex-1 overflow-y-auto p-4">
           <>
             <p className=" py-2 font-bold text-xl capitalize ">
               Les stage affectés :
@@ -104,7 +104,7 @@ const Sidebar = () => {
               ))}
             </ul>
           </>
-        )}
+
 
         <Separator className="my-4" />
 
@@ -122,9 +122,9 @@ const Sidebar = () => {
           Validation Stage
         </NavLink>
       </nav>
-
+    )}
       {/* Footer with logout button */}
-      <footer className="p-4 border-t">
+      <footer className="p-4 border-t mb-0">
         <Button
           variant="ghost"
           className="w-full justify-start text-muted-foreground hover:text-destructive"

@@ -125,6 +125,19 @@ const GestionUsers = () => {
     }
   };
 
+  const getRoleName = (role) => {
+    switch (role?.toUpperCase()) {
+      case "RESPONSABLE":
+        return "Responsable";
+      case "CANDIDAT":
+        return "Candidat";
+        case "PROF_SUPERVISOR":
+          return "Encadreur";
+      default:
+        return "outline";
+    }
+  };
+
   return (
     <div className="container mx-auto py-8 px-4">
       <Card>
@@ -236,7 +249,7 @@ const GestionUsers = () => {
                         </TableCell>
                         <TableCell>
                           <Badge variant={getRoleBadgeVariant(user.role)}>
-                            {user.role}
+                            {getRoleName(user.role)}
                           </Badge>
                         </TableCell>
                         <TableCell className=" flex flex-row justify-end ">
