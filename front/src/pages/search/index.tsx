@@ -9,9 +9,11 @@ import Navbar from "@/components/navbar"
 
 export default function Job() {
   const [sujets, setSujets] = useState([])
+  const [filteredSujets, setFilteredSujets] = useState([])
   const [categories, setCategories] = useState([])
   const [selectedCategory, setSelectedCategory] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("")
 
   useEffect(() => {
     fetchCategories()
@@ -23,6 +25,11 @@ export default function Job() {
       fetchSujetsByCategory(selectedCategory)
     }
   }, [selectedCategory])
+
+  // Apply search filter whenever sujets or searchTerm changes
+  useEffect(() => {
+    filterSujets()
+  }, [sujets, searchTerm])
 
   const fetchCategories = async () => {
     setIsLoading(true)
@@ -36,6 +43,31 @@ export default function Job() {
     }
   }
 
+  // Filter sujets based on search term
+  const filterSujets = () => {
+    if (!searchTerm.trim()) {
+      setFilteredSujets(sujets)
+      return
+    }
+
+    const filtered = sujets.filter(sujet => {
+      const searchTermLower = searchTerm.toLowerCase()
+      return (
+        (sujet.titre && sujet.titre.toLowerCase().includes(searchTermLower)) ||
+        (sujet.description && sujet.description.toLowerCase().includes(searchTermLower)) ||
+        (sujet.category?.name && sujet.category.name.toLowerCase().includes(searchTermLower)) ||
+        (sujet.location && sujet.location.toLowerCase().includes(searchTermLower))
+      )
+    })
+
+    setFilteredSujets(filtered)
+  }
+
+  // Handle search button click
+  const handleSearch = () => {
+    filterSujets()
+  }
+
   const fetchAllSujets = async () => {
     setIsLoading(true)
     try {
@@ -45,6 +77,7 @@ export default function Job() {
         category: sujet.category || { name: "Unknown" } // Ensure category exists
       }))
       setSujets(sujetsWithCategories)
+      setFilteredSujets(sujetsWithCategories)
     } catch (error) {
       console.error("Error fetching all sujets:", error)
     } finally {
@@ -61,6 +94,9 @@ export default function Job() {
         category: sujet.category || { name: "Unknown" } // Ensure category exists
       }))
       setSujets(sujetsWithCategories)
+      setFilteredSujets(sujetsWithCategories)
+      // Reset search term when changing category
+      setSearchTerm("")
     } catch (error) {
       console.error(`Error fetching sujets for category ${categoryId}:`, error)
     } finally {
@@ -75,6 +111,8 @@ export default function Job() {
     } else {
       setSelectedCategory(categoryId)
     }
+    // Reset search term when changing category
+    setSearchTerm("")
   }
 
   return (
@@ -82,7 +120,11 @@ export default function Job() {
       <Navbar />
       <main className="min-h-screen mx-8 my-4 rounded-3xl py-10">
         <div className="mx-auto max-w-4xl space-y-8">
-          <SearchSection />
+          <SearchSection
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            handleSearch={handleSearch}
+          />
           <div className="mx-auto max-w-2xl">
             <Categories
               categories={categories}
@@ -97,8 +139,8 @@ export default function Job() {
             </div>
           ) : (
             <div className="grid gap-6 md:grid-cols-2">
-              {sujets && sujets.length > 0 ? (
-                sujets.map((sujet, index) => (
+              {filteredSujets && filteredSujets.length > 0 ? (
+                filteredSujets.map((sujet, index) => (
                   <JobCard
                     id={sujet.id}
                     key={sujet.id || index}
@@ -107,14 +149,16 @@ export default function Job() {
                     location={sujet.location || "Not specified"}
                     type={sujet.work || "Full-time"}
                     category={sujet.category?.name || "Technology"} // Safely access category.name
-              
+
                     backgroundColor={index % 4 === 0 ? "bg-pink-50/50" : "bg-gray-50"}
                     logo={sujet.logo}
                   />
                 ))
               ) : (
                 <div className="col-span-2 text-center py-8">
-                  <p className="text-gray-500">No jobs found for this category.</p>
+                  <p className="text-gray-500">
+                    {searchTerm ? `No jobs found matching "${searchTerm}"` : "No jobs found for this category."}
+                  </p>
                 </div>
               )}
             </div>
