@@ -12,6 +12,7 @@ import {
   UserCheck,
   LogOut,
   ChevronRight,
+  Settings,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -54,6 +55,11 @@ const Sidebar = () => {
       path: "/admin/stagaire",
       icon: <GraduationCap className="h-5 w-5" />,
       label: "Stagiaires Acceptes",
+    },
+    {
+      path: "/admin/profile",
+      icon: <Settings className="h-5 w-5" />,
+      label: "Mon Profil",
     },
   ]
 

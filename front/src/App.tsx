@@ -21,6 +21,8 @@ import ValidationStage from "./pages/Encadrant/page/ValidationStage";
 import ProfileEnc from "./pages/Encadrant/page/ProfileEnc";
 import Job from "./pages/search";
 import Category from "./pages/Admin/page/category";
+import AdminProfile from "./pages/Admin/page/profile";
+import Profile from "./pages/Etudiant/Components/profile";
 
 function App() {
   const router = createBrowserRouter([
@@ -46,6 +48,7 @@ function App() {
                 { path: "candidats", element: <Candidat /> },
                 { path: "stagaire", element: <StagiairesAcceptes /> },
                 { path: "category", element: <Category /> },
+                { path: "profile", element: <AdminProfile /> },
               ],
             },
           ],
@@ -60,6 +63,7 @@ function App() {
               children: [
                 { path: "avancement", element: <Avancement /> },
                 { path: "Liste-Candidature", element: <ListeCandidature /> },
+                { path: "profile", element: <Profile /> },
               ],
             },
           ],

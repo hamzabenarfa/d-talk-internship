@@ -7,6 +7,7 @@ import {
   List,
   FileCheck,
   GraduationCap,
+  Settings,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,11 @@ const Sidebar = () => {
       path: "/etudiant/avancement",
       icon: <FileCheck className="h-5 w-5" />,
       label: "Tache des stage",
+    },
+    {
+      path: "/etudiant/profile",
+      icon: <Settings className="h-5 w-5" />,
+      label: "Mon Profil",
     },
   ];
 

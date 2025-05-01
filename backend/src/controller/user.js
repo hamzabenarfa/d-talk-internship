@@ -190,6 +190,7 @@ const getProfesseurs = async (req, res) => {
 const updateprofile = async (req, res) => {
   const { id } = req.user;
   const data = req.body;
+  console.log("🚀 ~ updateprofile ~ data:", data)
 
   try {
     const existingUser = await prisma.user.findUnique({

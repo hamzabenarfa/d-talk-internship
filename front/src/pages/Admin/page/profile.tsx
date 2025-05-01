@@ -1,6 +1,6 @@
-import UserSettings from "../../../../components/user-settings";
+import UserSettings from "../../../components/user-settings";
 
-const ProfileEnc = () => {
+const AdminProfile = () => {
   return (
     <div className="container mx-auto py-8">
       <h1 className="text-3xl font-bold mb-6">Mon Profil</h1>
@@ -9,4 +9,4 @@ const ProfileEnc = () => {
   );
 };
 
-export default ProfileEnc;
+export default AdminProfile;

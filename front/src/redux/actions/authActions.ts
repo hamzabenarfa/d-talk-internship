@@ -3,6 +3,11 @@ export const loginSuccess = (user) => ({
     payload: user,
 });
 
+export const updateUserProfile = (userData) => ({
+    type: 'UPDATE_USER_PROFILE',
+    payload: userData,
+});
+
 export const logout = () => ({
     type: 'LOGOUT',
 });
