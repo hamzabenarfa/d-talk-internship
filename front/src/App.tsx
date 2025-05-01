@@ -76,7 +76,7 @@ function App() {
               path: "",
               element: <Encadrant />,
               children: [
-                { path: "", element: <Main /> },
+                // { path: "", element: <Main /> },
                 { path: "stage/:id", element: <Stage /> },
                 { path: "validation-stage", element: <ValidationStage /> },
                 { path: "profil", element: <ProfileEnc /> },

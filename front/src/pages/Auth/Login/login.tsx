@@ -74,7 +74,7 @@ export default function LoginPage() {
             navigate(from === "/" ? "/etudiant" : from, { replace: true });
             break;
           case "PROF_SUPERVISOR":
-            navigate("/encadrant");
+            navigate("/encadrant/profil");
             break;
           default:
             navigate(from, { replace: true });
