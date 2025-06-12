@@ -1,6 +1,6 @@
 # 🧑‍💼 D-Talk Internship Platform
 
-A full-stack web application built for D-Talk, designed to manage and post internship opportunities. The platform features real-time notifications via WebSockets, modern UI with TailwindCSS, and a scalable backend using Node.js, Express, and MySQL with Prisma ORM.
+A full-stack web application built for D-Talk to manage internships, monitor student progress, and facilitate communication between instructors and interns. The platform supports real-time task assignments and comments via WebSockets, features a modern UI with TailwindCSS, and runs on a scalable backend using Node.js, Express, MySQL, and Prisma ORM.
 
 ## 📦 Tech Stack
 
