@@ -1,5 +1,4 @@
 // @ts-nocheck
-"use client";
 
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
@@ -45,7 +44,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full bg-[#f9f5f0]/80 backdrop-blur-md border-b border-[#b89048]/10">
       <div className="container flex items-center justify-between lg:justify-evenly h-16 px-4 mx-auto">
         <Link to="/">
-          <img src="/public/logo.png" alt="logo" className="w-20" />
+          <img src="/logo.png" alt="logo" className="w-20" />
         </Link>
 
         <nav className="hidden md:flex md:items-center md:space-x-6">
