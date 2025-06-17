@@ -21,7 +21,7 @@ const EtudiantDashboard = () => {
 
   async function getSujet() {
     try {
-      const res = await axios.get("http://localhost:4000/sujet");
+      const res = await axios.get(import.meta.env.VITE_API_URL+"/sujet");
       setResults(res.data);
       setFilteredResults(res.data); 
     } catch (error) {

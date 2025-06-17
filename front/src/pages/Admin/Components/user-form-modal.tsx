@@ -109,8 +109,8 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
             };
 
             const url = editMode
-                ? `http://localhost:4000/user/update/${user?.id}`
-                : "http://localhost:4000/auth/register";
+                ? `${import.meta.env.VITE_API_URL}/user/update/${user?.id}`
+                : import.meta.env.VITE_API_URL+"/auth/register";
             const method = editMode ? "put" : "post";
             const headers = editMode ? { Authorization: `Bearer ${token}` } : {};
 

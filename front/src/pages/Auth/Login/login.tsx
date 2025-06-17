@@ -58,12 +58,15 @@ export default function LoginPage() {
     }
 
     try {
-      const response = await axios.post("http://localhost:4000/auth/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        import.meta.env.VITE_API_URL + "/auth/login",
+        {
+          email,
+          password,
+        }
+      );
       toast.success("Connexion réussie");
-      console.log(response.data.user.role)
+      console.log(response.data.user.role);
       if (response.data) {
         dispatch(loginSuccess(response.data));
         switch (response.data.user.role) {
@@ -133,14 +136,14 @@ export default function LoginPage() {
                 {errors.password && (
                   <div className="text-red-500 text-sm">{errors.password}</div>
                 )}
-                <div className="text-right">
+                {/* <div className="text-right">
                   <Link
                     href="/forgot-password"
                     className="text-sm text-pink-500 hover:text-pink-600"
                   >
                     Forgot password?
                   </Link>
-                </div>
+                </div> */}
               </div>
 
               <Button

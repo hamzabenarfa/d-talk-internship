@@ -38,7 +38,7 @@ const Avancement = () => {
 
 
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:8081")
+    const socket = new WebSocket(import.meta.env.WEB_SOCKET_URL)
 
     // Listen for messages from the server
     socket.onmessage = (event) => {

@@ -53,7 +53,7 @@ const GestionUsers = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await axiosInstance.get("http://localhost:4000/user");
+      const response = await axiosInstance.get(import.meta.env.VITE_API_URL+"/user");
       setUsers(response.data);
       setFilteredUsers(response.data);
       setError("");
@@ -72,7 +72,7 @@ const GestionUsers = () => {
     ) {
       try {
         await axiosInstance.delete(
-          `http://localhost:4000/user/delete/${userId}`
+          `${import.meta.env.VITE_API_URL}/user/delete/${userId}`
         );
         fetchUsers();
         toast.success("Utilisateur supprimé avec succès");

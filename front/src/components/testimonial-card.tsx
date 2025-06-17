@@ -25,7 +25,7 @@ export default function TestimonialCard({ quote, name, role, image }: Testimonia
 
       <div className="flex items-center mt-auto">
         <div className="relative w-12 h-12 mr-4 overflow-hidden rounded-full">
-          <img src={image || "/placeholder.svg"} alt={name} fill className="object-cover" />
+          {/* <img src={image || "/placeholder.svg"} alt={name} fill className="object-cover" /> */}
         </div>
         <div>
           <h4 className="font-bold">{name}</h4>
