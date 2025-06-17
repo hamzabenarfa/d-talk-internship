@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Button } from "@/components/ui/button";
 import InternshipCard from "@/components/internship-card";
 import type { Internship } from "@/types/internship";

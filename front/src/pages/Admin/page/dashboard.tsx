@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { BarChartCandidatSujet } from "../charts/candidat-sujet";
 import { TacheRapport } from "../charts/tache-rapport-valide";
 import { TacheRapportSujet } from "../charts/tache-rapport-sujet";

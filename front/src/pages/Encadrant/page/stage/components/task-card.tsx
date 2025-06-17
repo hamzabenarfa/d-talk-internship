@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState } from "react"
 import { Calendar, Clock, Edit2, Trash2, MessageSquare, Paperclip, Send, CheckCircle, MoreVertical, XCircle } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"

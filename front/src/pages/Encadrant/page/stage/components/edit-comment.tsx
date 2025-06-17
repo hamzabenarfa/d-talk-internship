@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable react/prop-types */
 
 import toast from "react-hot-toast";

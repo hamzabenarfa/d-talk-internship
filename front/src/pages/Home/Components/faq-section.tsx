@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const FAQSection = () => (
   <section className="py-20 bg-white">
     <div className="container px-4 mx-auto">

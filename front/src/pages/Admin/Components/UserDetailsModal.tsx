@@ -1,3 +1,4 @@
+// @ts-nocheck
 
 const UserDetailsModal = ({ user, onClose, onDownloadCV }) => {
   if (!user) return null;

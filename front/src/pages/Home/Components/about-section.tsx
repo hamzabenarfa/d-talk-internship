@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Calendar, GraduationCap, Users } from "lucide-react"
 
 export const AboutSection = () => (

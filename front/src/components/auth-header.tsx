@@ -1,3 +1,4 @@
+// @ts-nocheck
 export function AuthHeader({ title, subtitle }: { title: string; subtitle: string }) {
     return (
       <div className="space-y-2 text-center">

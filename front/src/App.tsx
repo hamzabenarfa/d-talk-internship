@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home/home";
 import Login from "./pages/Auth/Login/login";

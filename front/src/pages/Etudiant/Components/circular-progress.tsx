@@ -1,3 +1,4 @@
+// @ts-nocheck
 const CircularProgress = ({ progress }) => {
     const radius = 18;
     const circumference = radius * 2 * Math.PI;

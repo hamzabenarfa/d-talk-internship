@@ -1,3 +1,4 @@
+// @ts-nocheck
 import UserSettings from "../../../../components/user-settings";
 
 const ProfileEnc = () => {

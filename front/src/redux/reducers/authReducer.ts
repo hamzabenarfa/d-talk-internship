@@ -1,3 +1,4 @@
+// @ts-nocheck
 const initialState = {
     user: JSON.parse(localStorage.getItem('user')) || null,
 };

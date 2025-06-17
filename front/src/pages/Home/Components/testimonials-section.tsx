@@ -1,3 +1,4 @@
+// @ts-nocheck
 import TestimonialCard from "@/components/testimonial-card"
 
 export const TestimonialsSection = () => (

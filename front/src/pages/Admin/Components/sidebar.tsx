@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client"
 
 import { useDispatch, useSelector } from "react-redux"

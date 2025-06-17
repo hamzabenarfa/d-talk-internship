@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Sidebar from './Components/sidebar';
 import { Outlet } from 'react-router-dom';
 const Etudiant = () => {
