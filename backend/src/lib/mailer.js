@@ -8,8 +8,8 @@ async function sendEmail(to, subject, recipientName, sujetName ) {
       port: 2525, // Mailtrap SMTP port
       secure: false, // true for 465, false for other ports
       auth: {
-        user: "93d4d6c31b3ed6",
-        pass: "70bf9eba329ec8",
+        user: "1a8da67e4f32a0",
+        pass: "9ab15069c13aac",
       },
     });
 
