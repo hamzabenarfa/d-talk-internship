@@ -4,29 +4,34 @@ const prisma = new PrismaClient();
 
 const getMyTasks = async (req, res) => {
   const userId = req.user.id;
+  console.log("🚀 ~ getMyTasks ~ userId:", userId)
+  
   try {
     const myCandidature = await prisma.candidature.findFirst({ 
       where: {
-        userId,
+        userId:+userId,
         status: Status.ACCEPTED,
       },
     });
+    console.log("🚀 ~ getMyTasks ~ myCandidature:", myCandidature)
     if (!myCandidature) {
       return res.status(400).json({ message: "No candidature found" });
     }
 
-    const existTask = await prisma.task.findFirst({
+    const existTask = await prisma.task.findMany({
       where: {
         userId:myCandidature.supervisorId,
+        candidatureId:myCandidature.id
       },
     });
+    console.log("🚀 ~ getMyTasks ~ existTask:", existTask)
     if (!existTask) {
       return res.status(400).json({ message: "No task found" });
     }
-    const tasks = await prisma.task.findMany({
-      where: { userId: myCandidature.supervisorId },
-    });
-    res.json(tasks);
+    // const tasks = await prisma.task.findMany({
+    //   where: { userId: myCandidature.supervisorId },
+    // });
+    res.json(existTask);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch tasks" });
   }

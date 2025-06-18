@@ -26,6 +26,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Avancement = () => {
   const [tache, setTache] = useState([]);
+  console.log("🚀 ~ Avancement ~ tache:", tache)
   const [comments, setComments] = useState({});
   const [progressUpdates, setProgressUpdates] = useState({});
   const [fileAttachments, setFileAttachments] = useState({});
