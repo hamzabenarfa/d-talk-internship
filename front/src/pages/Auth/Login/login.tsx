@@ -75,7 +75,7 @@ export default function LoginPage() {
             navigate("/admin/dashboard");
             break;
           case "CANDIDAT":
-            navigate(from === "/" ? "/etudiant" : from, { replace: true });
+            navigate(from === "/" ? "/etudiant/liste-candidature" : from, { replace: true });
             break;
           case "PROF_SUPERVISOR":
             navigate("/encadrant/profil");
