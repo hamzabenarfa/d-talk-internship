@@ -80,7 +80,7 @@ const StagiairesAcceptes = () => {
       <h1 className="text-3xl font-bold leading-tight text-gray-900">
         Stagiaires Acceptés
       </h1>
-      <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+      <div className="bg-white shadow  sm:rounded-lg">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-800 text-white">
             <tr>

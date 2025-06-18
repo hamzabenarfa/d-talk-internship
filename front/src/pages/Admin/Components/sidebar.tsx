@@ -1,8 +1,7 @@
 // @ts-nocheck
-"use client"
 
 import { useDispatch, useSelector } from "react-redux"
-import { Link, NavLink, useLocation } from "react-router-dom"
+import { Link, NavLink } from "react-router-dom"
 import { logout } from "../../../redux/actions/authActions"
 import {
   LayoutDashboard,
@@ -12,54 +11,64 @@ import {
   GraduationCap,
   UserCheck,
   LogOut,
-  ChevronRight,
   Settings,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Separator } from "@/components/ui/separator"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+  SidebarSeparator,
+} from "@/components/ui/sidebar"
 
-const Sidebar = () => {
+export function AppSidebar() {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.auth.user.user)
-  const location = useLocation()
 
   // Define the navigation links with Lucide icons
   const navLinks = [
     {
       path: "/admin/dashboard",
-      icon: <LayoutDashboard className="h-5 w-5" />,
+      icon: LayoutDashboard,
       label: "Dashboard",
     },
     {
       path: "/admin/gestion-users",
-      icon: <Users className="h-5 w-5" />,
+      icon: Users,
       label: "Gestion Users",
     },
     {
       path: "/admin/gestion-sujet",
-      icon: <FileText className="h-5 w-5" />,
+      icon: FileText,
       label: "Gestion Sujet",
     },
     {
       path: "/admin/category",
-      icon: <FolderKanban className="h-5 w-5" />,
+      icon: FolderKanban,
       label: "Gestion Category",
     },
     {
       path: "/admin/candidats",
-      icon: <UserCheck className="h-5 w-5" />,
+      icon: UserCheck,
       label: "Candidats Stagiaires",
     },
     {
       path: "/admin/stagaire",
-      icon: <GraduationCap className="h-5 w-5" />,
+      icon: GraduationCap,
       label: "Stagiaires Acceptes",
     },
     {
       path: "/admin/profile",
-      icon: <Settings className="h-5 w-5" />,
+      icon: Settings,
       label: "Mon Profil",
     },
   ]
@@ -79,66 +88,67 @@ const Sidebar = () => {
   }
 
   return (
-    <div className="w-64 h-screen bg-background border-r flex flex-col">
-      {/* Header with user info */}
-      <div className="p-4">
-        <div className="flex items-center space-x-3 py-4">
+    <Sidebar>
+      <SidebarHeader>
+        <div className="flex items-center space-x-3 p-2">
           <Avatar className="h-10 w-10">
-            <AvatarFallback className="bg-primary text-primary-foreground">{getInitials(user.nom)}</AvatarFallback>
+            <AvatarFallback className="bg-primary text-primary-foreground">{getInitials(user?.nom)}</AvatarFallback>
           </Avatar>
-          <div className="space-y-1">
-            <p className="text-sm font-medium leading-none">{user.nom}</p>
-            <p className="text-xs text-muted-foreground">{user.email}</p>
+          <div className="space-y-1 min-w-0 flex-1">
+            <p className="text-sm font-medium leading-none truncate">{user?.nom}</p>
+            <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
           </div>
         </div>
-      </div>
+      </SidebarHeader>
 
-      <Separator />
+      <SidebarSeparator />
 
-      {/* Navigation Links */}
-      <nav className="flex-1 p-4">
-        <div className="space-y-1">
-          {navLinks.map((link, index) => (
-            <NavLink
-              key={index}
-              to={link.path}
-              className={({ isActive }) =>
-                cn(
-                  "flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
-                  isActive
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                )
-              }
-            >
-              <div className="flex items-center gap-3">
-                {link.icon}
-                <span>{link.label}</span>
-              </div>
-              <ChevronRight className="h-4 w-4 opacity-50" />
-            </NavLink>
-          ))}
-        </div>
-      </nav>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navLinks.map((link, index) => (
+                <SidebarMenuItem key={index}>
+                  <SidebarMenuButton asChild>
+                    <NavLink
+                      to={link.path}
+                      className={({ isActive }) =>
+                        cn("flex items-center gap-3 w-full", isActive && "bg-primary text-primary-foreground")
+                      }
+                    >
+                      <link.icon className="h-5 w-5" />
+                      <span>{link.label}</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
 
-      {/* Footer with logout */}
-      <div className="p-4 mt-auto">
-        <Separator className="mb-4" />
-        <Button
-          variant="ghost"
-          className="w-full justify-start text-muted-foreground hover:text-destructive"
-          onClick={handleLogout}
-          asChild
-        >
-          <Link to="/">
-            <LogOut className="mr-2 h-4 w-4" />
-            Déconnexion
-          </Link>
-        </Button>
-      </div>
-    </div>
+      <SidebarFooter>
+        <SidebarSeparator />
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-muted-foreground hover:text-destructive"
+                onClick={handleLogout}
+                asChild
+              >
+                <Link to="/">
+                  <LogOut className="h-4 w-4" />
+                  <span>Déconnexion</span>
+                </Link>
+              </Button>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+
+      <SidebarRail />
+    </Sidebar>
   )
 }
-
-export default Sidebar
-
