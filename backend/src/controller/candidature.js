@@ -112,7 +112,9 @@ const refuseCandidature = async (req, res) => {
       },
     });
     if (candidatureAlreadyAccepted) {
-      return res.status(400).json({ error: "Candidature deja accepté au autre stage" });
+      return res
+        .status(400)
+        .json({ error: "Candidature deja accepté au autre stage" });
     }
     const updatedCandidature = await prisma.candidature.update({
       where: { id: parseInt(id) },
@@ -120,7 +122,7 @@ const refuseCandidature = async (req, res) => {
     });
     res.json(updatedCandidature);
   } catch (error) {
-    console.log("🚀 ~ refuseCandidature ~ error:", error)
+    console.log("🚀 ~ refuseCandidature ~ error:", error);
     res.status(500).json({ error: "Failed to refuse candidature" });
   }
 };
@@ -149,7 +151,9 @@ const acceptCandidature = async (req, res) => {
       },
     });
     if (candidatureAlreadyAccepted) {
-      return res.status(400).json({ error: "Candidature deja accepté au autre stage" });
+      return res
+        .status(400)
+        .json({ error: "Candidature deja accepté au autre stage" });
     }
     const updatedCandidature = await prisma.candidature.update({
       where: { id: parseInt(id) },
@@ -167,7 +171,7 @@ const acceptCandidature = async (req, res) => {
 
     const sujetName = updatedCandidature.sujet.titre;
 
-    await sendEmail(email, "stage affecté", name,sujetName);
+    await sendEmail(email, "stage affecté", name, sujetName);
     res.json(updatedCandidature);
   } catch (error) {
     // res.status(500).json({ error: "Failed to accept candidature" });
@@ -239,7 +243,11 @@ const downloadAllResources = async (req, res) => {
     });
 
     if (!resources.length) {
-      return res.status(404).json({error:"Il n'y a aucun document disponible pour cet utilisateur."});
+      return res
+        .status(404)
+        .json({
+          error: "Il n'y a aucun document disponible pour cet utilisateur.",
+        });
     }
 
     const archive = archiver("zip", { zlib: { level: 9 } });
@@ -455,29 +463,67 @@ const getValidationStage = async (req, res) => {
   }
 };
 
-
-const validerCandidature = async(req,res)=>{
-  const {candidatureId} = req.params.id;
-  const userId = req.user.id;
+const validerCandidature = async (req, res) => {
+  const { candidatureId } = req.params;
 
   try {
-
+    // Étape 1 : Vérifier si la candidature existe
     const candidatureExist = await prisma.candidature.findUnique({
-      where :{
-        id:+candidatureId
-      }
-    })
-    
-    if(!candidatureExist) res.status(404).json({error:"candidature n'existe pas"})
-    
-    if(candidatureExist.status!=Status.ACCEPTE) res.status(401).json({error:"candidature doit etre accepté"})
-    
-      
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch candidatures" });
+      where: {
+        id: +candidatureId,
+      },
+    });
 
+    if (!candidatureExist) {
+      return res.status(404).json({ error: "La candidature n'existe pas" });
+    }
+
+    if (candidatureExist.status !== Status.ACCEPTE) {
+      return res.status(401).json({ error: "La candidature doit être acceptée avant d'être validée" });
+    }
+
+    // Étape 2 : Récupérer toutes les tâches liées à cette candidature
+    const tasks = await prisma.task.findMany({
+      where: {
+        candidatureId: candidatureExist.id,
+      },
+    });
+
+    if (tasks.length === 0) {
+      return res.status(400).json({ error: "Aucune tâche trouvée pour cette candidature" });
+    }
+
+    // Étape 3 : Compter les tâches valides
+    const validTasks = tasks.filter(task => task.valide === true);
+    const validPercentage = (validTasks.length / tasks.length) * 100;
+
+    // Étape 4 : Valider le pourcentage
+    if (validPercentage < 80) {
+      return res.status(400).json({
+        error: `Seulement ${validPercentage.toFixed(2)}% des tâches sont valides. Un minimum de 80% est requis.`,
+      });
+    }
+
+    // Étape 5 : Mettre à jour la candidature comme validée
+    const updatedCandidature = await prisma.candidature.update({
+      where: {
+        id: candidatureExist.id,
+      },
+      data: {
+        valide: true,
+      },
+    });
+
+    return res.status(200).json({
+      message: "Candidature validée avec succès",
+      candidature: updatedCandidature,
+    });
+
+  } catch (error) {
+    console.error("Erreur lors de la validation de la candidature :", error);
+    return res.status(500).json({ error: "Échec de la validation de la candidature" });
   }
-}
+};
 
 module.exports = {
   getCandidatureById,
@@ -495,5 +541,5 @@ module.exports = {
   getAvancementBySupervisor,
   getValidationStage,
   getCandidatCandidatures,
-  validerCandidature
+  validerCandidature,
 };

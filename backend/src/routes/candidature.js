@@ -46,7 +46,7 @@ router.post(
 
 router.put("/accepter/:id", acceptCandidature);
 router.put("/rejeter/:id", refuseCandidature);
-router.put("/valider/:id", validerCandidature);
+router.put("/valider/:candidatureId", validerCandidature);
 
 router.put(
   "/encadrant/:supervisorId/candidat/:internId/sujet/:sujetId",

@@ -88,6 +88,7 @@ const Sidebar = () => {
               </p>
               <ul className="space-y-1">
                 {myAdvancement.map((advancement) => (
+                  !advancement.valide &&
                   <li key={advancement.id}>
                     <NavLink
                       to={`/encadrant/stage/${advancement.id}`}
