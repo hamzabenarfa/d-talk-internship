@@ -89,7 +89,7 @@ export default function Sujet() {
         },
       })
       toast.success("Application submitted successfully!")
-      navigate("/etudiant")
+      navigate("/etudiant/liste-candidature")
     } catch (error: any) {
       console.error("Error submitting application:", error)
       toast.error(error.response?.data?.error || "Failed to submit application")

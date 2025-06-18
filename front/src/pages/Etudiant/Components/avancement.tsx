@@ -35,7 +35,6 @@ const Avancement = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const userId = useSelector((state) => state.auth.user.user.id);
   const [myAdvancement, setMyAdvancement] = useState<Advancement[]>([]);
-  console.log("🚀 ~ Avancement ~ myAdvancement:", myAdvancement)
   const [newTask, setNewTask] = useState({
     name: "",
     description: "",
