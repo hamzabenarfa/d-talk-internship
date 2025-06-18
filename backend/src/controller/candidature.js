@@ -167,10 +167,10 @@ const acceptCandidature = async (req, res) => {
 
     const sujetName = updatedCandidature.sujet.titre;
 
-    await sendEmail(email, "stage affecté", name);
+    await sendEmail(email, "stage affecté", name,sujetName);
     res.json(updatedCandidature);
   } catch (error) {
-    res.status(500).json({ error: "Failed to accept candidature" });
+    // res.status(500).json({ error: "Failed to accept candidature" });
   }
 };
 

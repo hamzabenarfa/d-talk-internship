@@ -3,16 +3,19 @@ import { useState, useEffect } from "react";
 import axiosInstance from "../../../../axios-instance";
 import Toast from "react-hot-toast";
 import UserDetailsModal from "./UserDetailsModal";
+import { Loader2 } from "lucide-react";
 
 const Candidat = () => {
   const [candidates, setCandidates] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loadingAccept, setLoadingAccept] = useState({});
+  const [loadingRefuse, setLoadingRefuse] = useState({});
 
   useEffect(() => {
     fetchCandidates();
   }, []);
+
   const fetchCandidates = async () => {
     try {
       const response = await axiosInstance.get("/candidature");
@@ -23,6 +26,7 @@ const Candidat = () => {
       );
     }
   };
+
   const handleDownloadCV = async (id) => {
     try {
       const { data } = await axiosInstance.get(
@@ -41,22 +45,28 @@ const Candidat = () => {
   };
 
   const handleAccept = async (id) => {
+    setLoadingAccept((prev) => ({ ...prev, [id]: true }));
     try {
       await axiosInstance.put(`candidature/accepter/${id}`);
-      Toast.success(`Candidature ${id} acceptée.`);
+      Toast.success("Candidature acceptée.");
       fetchCandidates();
     } catch (error) {
-      Toast.error(error.response.data.error);
+      Toast.error(error.response?.data?.error || error.message);
+    } finally {
+      setLoadingAccept((prev) => ({ ...prev, [id]: false }));
     }
   };
 
   const handleRefuse = async (id) => {
+    setLoadingRefuse((prev) => ({ ...prev, [id]: true }));
     try {
       await axiosInstance.put(`candidature/rejeter/${id}`);
-      Toast.success(`Candidature ${id} refusée.`);
+      Toast.success("Candidature refusée.");
       fetchCandidates();
     } catch (error) {
-      Toast.error(error.response.data.error);
+      Toast.error(error.response?.data?.error || error.message);
+    } finally {
+      setLoadingRefuse((prev) => ({ ...prev, [id]: false }));
     }
   };
 
@@ -80,54 +90,34 @@ const Candidat = () => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-800 text-white">
             <tr>
-     
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-              >
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                 Email
               </th>
-        
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-              >
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                 Stage
               </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-              >
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                 Etat
               </th>
-
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-              >
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                 Détail
               </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-              >
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {candidates && candidates.map((candidate) => (
+            {candidates.map((candidate) => (
               <tr key={candidate.id}>
-         
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {candidate.user?.email || ''}
+                  {candidate.user?.email || ""}
                 </td>
-           
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {candidate.sujet?.titre || ''}
+                  {candidate.sujet?.titre || ""}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 ">
-                  {candidate.status || ''}
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {candidate.status || ""}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <button
@@ -137,36 +127,42 @@ const Candidat = () => {
                     Voir détail
                   </button>
                 </td>
-                <td className="px-6 py-4 space-x-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="flex items-center justify-center px-6 py-4 space-x-4 whitespace-nowrap text-sm text-gray-500">
                   <button
                     onClick={() => handleAccept(candidate.id)}
-                    disabled={candidate.status === "ACCEPTE"}
-                    className={`px-4 py-2 rounded-lg font-semibold transition-colors duration-300 
-                                        ${
-                                          candidate.status === "ACCEPTE"
-                                            ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                                            : "bg-green-500 text-white hover:bg-green-600"
-                                        }`}
+                    disabled={
+                      candidate.status === "ACCEPTE" ||
+                      loadingAccept[candidate.id]
+                    }
+                    className={`px-4 py-2 rounded-lg font-semibold transition-colors duration-300 ${
+                      candidate.status === "ACCEPTE" || loadingAccept[candidate.id]
+                        ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                        : "bg-green-500 text-white hover:bg-green-600"
+                    }`}
                   >
-                    Accepter
+                    {loadingAccept[candidate.id] ? <Loader2 className=" animate-spin " /> : "Accepter"}
                   </button>
+
                   <button
                     onClick={() => handleRefuse(candidate.id)}
-                    disabled={candidate.status === "REFUSE"}
-                    className={`px-4 py-2 rounded-lg font-semibold transition-colors duration-300 
-                                        ${
-                                          candidate.status === "REFUSE"
-                                            ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                                            : "bg-red-500 text-white hover:bg-red-600"
-                                        }`}
+                    disabled={
+                      candidate.status === "REFUSE" ||
+                      loadingRefuse[candidate.id]
+                    }
+                    className={`px-4 py-2 rounded-lg font-semibold transition-colors duration-300 ${
+                      candidate.status === "REFUSE" || loadingRefuse[candidate.id]
+                        ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                        : "bg-red-500 text-white hover:bg-red-600"
+                    }`}
                   >
-                    Refuser
+                    {loadingRefuse[candidate.id] ?  <Loader2 className=" animate-spin" /> : "Refuser"}
                   </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+
         {detailsModalOpen && (
           <UserDetailsModal
             user={selectedUser}
