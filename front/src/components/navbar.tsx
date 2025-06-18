@@ -24,7 +24,7 @@ export default function Navbar() {
         break;
       case "CANDIDAT":
       case "INTERN":
-        navigate("/etudiant");
+        navigate("/etudiant/liste-candidature");
         break;
       case "PROF_SUPERVISOR":
         navigate("/encadrant");

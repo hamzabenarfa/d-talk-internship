@@ -1,160 +1,207 @@
+"use client"
+
 // @ts-nocheck
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
-import axiosInstance from "../../../../axios-instance";
-import { logout } from "../../../redux/actions/authActions";
+import { useState, useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { NavLink } from "react-router-dom"
+import axiosInstance from "../../../../axios-instance"
+import { logout } from "../../../redux/actions/authActions"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { LogOut, GraduationCap, CheckCircle, Settings } from "lucide-react"
+import { cn } from "@/lib/utils"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+  SidebarSeparator,
+  SidebarMenuSkeleton,
+} from "@/components/ui/sidebar"
 
-// UI Components
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
-
-// Types (optional: if using TypeScript)
+// Types
 interface Advancement {
-  id: number;
+  id: number
+  valide: boolean
   sujet: {
-    titre: string;
-  };
+    titre: string
+  }
 }
 
 interface User {
-  nom: string;
-  email: string;
+  nom: string
+  email: string
 }
 
-const Sidebar = () => {
-  const dispatch = useDispatch();
-  const user = useSelector((state: any) => state.auth.user?.user);
-  const [myAdvancement, setMyAdvancement] = useState<Advancement[]>([]);
+export function EncadrantSidebar() {
+  const dispatch = useDispatch()
+  const user = useSelector((state: any) => state.auth.user?.user)
+  const [myAdvancement, setMyAdvancement] = useState<Advancement[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   // Fetch advancement data on component mount
   useEffect(() => {
-    getMyAdvancement();
-  }, []);
+    getMyAdvancement()
+  }, [])
 
   const getMyAdvancement = async () => {
     try {
-      const response = await axiosInstance.get(
-        "candidature/avancement/supervisor"
-      );
-      setMyAdvancement(response.data);
+      setIsLoading(true)
+      const response = await axiosInstance.get("candidature/avancement/supervisor")
+      setMyAdvancement(response.data)
     } catch (error) {
-      console.error("Error fetching advancement data:", error);
+      console.error("Error fetching advancement data:", error)
+    } finally {
+      setIsLoading(false)
     }
-  };
+  }
 
   // Handle logout action
   const handleLogout = () => {
-    dispatch(logout());
-  };
+    dispatch(logout())
+  }
 
   // Helper function to extract initials from a name
   const getInitials = (name?: string): string => {
-    if (!name) return "U";
+    if (!name) return "U"
     return name
       .split(" ")
       .map((part) => part[0])
       .join("")
-      .toUpperCase();
-  };
+      .toUpperCase()
+  }
+
+  // Filter active (non-validated) internships
+  const activeInternships = myAdvancement.filter((advancement) => !advancement.valide)
 
   return (
-    <div className="w-64 h-screen bg-background border-r flex flex-col">
-      {/* Header with user info */}
-      <header className="p-4 border-b">
-        <div className="flex items-center space-x-3">
+    <Sidebar>
+      <SidebarHeader>
+        <div className="flex items-center space-x-3 p-2">
           <Avatar className="h-10 w-10">
-            <AvatarFallback className="bg-primary text-primary-foreground">
-              {getInitials(user?.nom)}
-            </AvatarFallback>
+            <AvatarFallback className="bg-primary text-primary-foreground">{getInitials(user?.nom)}</AvatarFallback>
           </Avatar>
-          <div className="space-y-1">
-            <p className="text-sm font-medium leading-none">{user?.nom}</p>
-            <p className="text-xs text-muted-foreground">{user?.email}</p>
+          <div className="space-y-1 min-w-0 flex-1">
+            <p className="text-sm font-medium leading-none truncate">{user?.nom}</p>
+            <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
           </div>
         </div>
-      </header>
+      </SidebarHeader>
 
-      {/* Navigation Links */}
-      <nav className="flex-1 overflow-y-auto p-4">
-        {myAdvancement.length > 0 && (
-          <>
-            <>
-              <p className=" py-2 font-bold text-xl capitalize ">
-                Les stage affectés :
-              </p>
-              <ul className="space-y-1">
-                {myAdvancement.map((advancement) => (
-                  !advancement.valide &&
-                  <li key={advancement.id}>
-                    <NavLink
-                      to={`/encadrant/stage/${advancement.id}`}
-                      className={({ isActive }) =>
-                        cn(
-                          "flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
-                          isActive
-                            ? "bg-primary text-primary-foreground"
-                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                        )
-                      }
-                    >
-                      {advancement.sujet.titre}
-                    </NavLink>
-                  </li>
-                ))}
-              </ul>
-            </>
+      <SidebarSeparator />
 
-            <Separator className="my-2 px-0" />
-
-            <NavLink
-              to="/encadrant/validation-stage"
-              className={({ isActive }) =>
-                cn(
-                  "flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
-                  isActive
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                )
-              }
-            >
-              Validation Stage
-            </NavLink>
-          </>
+      <SidebarContent>
+        {/* Assigned Internships Section */}
+        {(isLoading || activeInternships.length > 0) && (
+          <SidebarGroup>
+            <SidebarGroupLabel className="flex items-center gap-2">
+              <GraduationCap className="h-4 w-4" />
+              Stages Affectés
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {isLoading
+                  ? // Loading skeleton
+                    Array.from({ length: 3 }).map((_, index) => (
+                      <SidebarMenuItem key={index}>
+                        <SidebarMenuSkeleton />
+                      </SidebarMenuItem>
+                    ))
+                  : // Active internships
+                    activeInternships.map((advancement) => (
+                      <SidebarMenuItem key={advancement.id}>
+                        <SidebarMenuButton asChild>
+                          <NavLink
+                            to={`/encadrant/stage/${advancement.id}`}
+                            className={({ isActive }) =>
+                              cn("flex items-center gap-3 w-full", isActive && "bg-primary text-primary-foreground")
+                            }
+                          >
+                            <GraduationCap className="h-4 w-4 flex-shrink-0" />
+                            <span className="truncate">{advancement.sujet.titre}</span>
+                          </NavLink>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
         )}
 
-        <NavLink
-          to="/encadrant/profil"
-          className={({ isActive }) =>
-            cn(
-              "flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
-              isActive
-                ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground"
-            )
-          }
-        >
-          Settings
-        </NavLink>
-      </nav>
+        {/* Actions Section */}
+        {!isLoading && myAdvancement.length > 0 && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Actions</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <NavLink
+                      to="/encadrant/validation-stage"
+                      className={({ isActive }) =>
+                        cn("flex items-center gap-3 w-full", isActive && "bg-primary text-primary-foreground")
+                      }
+                    >
+                      <CheckCircle className="h-4 w-4" />
+                      <span>Validation Stage</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
 
-      {/* Footer with logout button */}
-      <footer className="p-4 border-t mb-0">
-        <Button
-          variant="ghost"
-          className="w-full justify-start text-muted-foreground hover:text-destructive"
-          onClick={handleLogout}
-          aria-label="Déconnexion"
-        >
-          <LogOut className="mr-2 h-4 w-4" />
-          Déconnexion
-        </Button>
-      </footer>
-    </div>
-  );
-};
+        {/* Settings Section */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Paramètres</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink
+                    to="/encadrant/profil"
+                    className={({ isActive }) =>
+                      cn("flex items-center gap-3 w-full", isActive && "bg-primary text-primary-foreground")
+                    }
+                  >
+                    <Settings className="h-4 w-4" />
+                    <span>Mon Profil</span>
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
 
-export default Sidebar;
+      <SidebarFooter>
+        <SidebarSeparator />
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-muted-foreground hover:text-destructive"
+                onClick={handleLogout}
+                aria-label="Déconnexion"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Déconnexion</span>
+              </Button>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+
+      <SidebarRail />
+    </Sidebar>
+  )
+}
